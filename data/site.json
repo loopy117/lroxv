@@ -1,0 +1,42 @@
+{
+  "nom": "La Roque Ovalie XV",
+  "baseline": "Rugby à La Roque-d'Anthéron",
+  "description": "Club de rugby de La Roque-d'Anthéron : école de rugby de 3 à 14 ans, équipe des moins de 16 ans à XV et rugby loisir, au stade Michel Bouchard.",
+  "url": "https://www.lroxv.fr",
+  "types_schema": [
+    "SportsClub"
+  ],
+  "telephone": "",
+  "email": "contact@lroxv.fr",
+  "horaires": "",
+  "adresse": {
+    "ville": "La Roque-d'Anthéron",
+    "code_postal": "13640",
+    "pays": "FR"
+  },
+  "legal": {
+    "raison_sociale": "La Roque Ovalie XV",
+    "forme": "association loi 1901",
+    "immatriculation": "RNA W131000916",
+    "directeur_publication": "David Merlo, président"
+  },
+  "zone_resume": "La Roque-d'Anthéron et ses environs",
+  "urgence": {
+    "actif": false,
+    "texte": ""
+  },
+  "reseaux": [
+    "https://www.facebook.com/lroxv"
+  ],
+  "cta_defaut": {
+    "titre": "Venez essayer le rugby",
+    "texte": "Laissez-nous vos coordonnées : un éducateur vous recontacte pour une séance d'essai et les papiers de licence.",
+    "ctas": [
+      {
+        "label": "S'inscrire",
+        "href": "/#inscription",
+        "style": "primaire"
+      }
+    ]
+  }
+}

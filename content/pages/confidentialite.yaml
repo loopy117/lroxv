@@ -1,0 +1,12 @@
+titre: Confidentialité
+statut: publie
+seo:
+  titre: "Politique de confidentialité · La Roque Ovalie XV"
+  description: "Politique de confidentialité de La Roque Ovalie XV : données reçues par le formulaire, durée de conservation, cookies et vos droits."
+  noindex: true
+sections:
+  - block: hero
+    variant: minimal
+    titre: Politique de confidentialité
+  - block: legal
+    variant: confidentialite

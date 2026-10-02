@@ -1,0 +1,15 @@
+{
+  "metiers": {
+    "artisans": "Artisans du bâtiment",
+    "commerces": "Commerces",
+    "restauration": "Restauration",
+    "services": "Services et professions libérales"
+  },
+  "tags": {
+    "realisations": {
+      "site-vitrine": "Site vitrine",
+      "refonte": "Refonte",
+      "referencement": "Référencement local"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "fond": "#1F2227",
+  "fond2": "#2B2E35",
+  "texte": "#FFFFFF",
+  "secondaire": "#B8BEC6",
+  "accent": "#FBC735",
+  "police_titre": "@fontsource/barlow-condensed/files/barlow-condensed-latin-800-normal.woff",
+  "police_texte": "@fontsource/barlow/files/barlow-latin-600-normal.woff",
+  "logo": "data/partage/logo.svg",
+  "logo_hauteur": 124,
+  "decor": "data/partage/decor.svg",
+  "titre_accueil": "Le rugby pour tous, de 3 ans aux… beaucoup plus !",
+  "marge_app": 0,
+  "favicon_svg": true,
+  "logo_y": 176
+}

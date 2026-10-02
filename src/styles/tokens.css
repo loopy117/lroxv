@@ -1,0 +1,106 @@
+/* ==========================================================================
+   Design tokens — La Roque Ovalie XV
+   Seule source des valeurs visuelles. Les composants n'utilisent que ces
+   variables. L'IA ne modifie jamais ce fichier.
+   ========================================================================== */
+:root {
+  /* Couleurs de marque — La Roque Ovalie XV (nouveau maillot : noir, bleu ciel, or) */
+  --c-ink:          #1F2227;   /* noir profond : textes forts, en-tête */
+  --c-primary:      #2B2E35;   /* noir du club : fonds sombres */
+  --c-primary-deep: #1F2227;   /* pied de page */
+  --c-accent:       #FBC735;   /* or : boutons, bandeau inscription */
+  --c-accent-ink:   #1F2227;   /* texte noir sur l'or (contraste 11:1) */
+  --c-accent-text:  #0D6E87;   /* bleu foncé lisible sur fond clair (surtitres, liens) : 5,8:1 sur blanc */
+  --c-peche:        #6BDBF4;   /* surtitres et coches sur fond noir (bleu ciel du maillot) */
+  --c-bleu:         #6BDBF4;   /* bleu ciel du maillot : accents sur fond sombre uniquement */
+  --c-link:         #0D6E87;
+  --c-link-hover:   #08505F;
+
+  /* Couleurs par métier (non utilisées ici, gardées pour le gabarit) */
+  --c-clim:         #2B2E35;
+  --c-pac:          #2B2E35;
+  --c-elec:         #2B2E35;
+  --c-solaire:      #FBC735;
+
+  /* Surfaces */
+  --c-surface:      #fff;
+  --c-surface-alt:  #F3F5F6;
+  --c-surface-dark: var(--c-primary);
+  --c-surface-accent: var(--c-accent);   /* fond « accent » : or (bandeau inscription) */
+  --c-btn-sur-accent: var(--c-ink);      /* bouton principal posé sur le fond or */
+  --c-btn-sur-accent-ink: #FFFFFF;
+  --c-border:       #DDE2E6;
+  --c-border-soft:  #E6EAED;
+  --c-border-dark:  #454A53;
+
+  /* Textes */
+  --c-text:         #1F2227;
+  --c-text-strong:  #1F2227;
+  --c-text-body:    #3A3F47;
+  --c-text-muted:   #4A4F57;   /* 8,1:1 sur blanc */
+  --c-eyebrow:      var(--c-accent-text);
+  --c-on-dark:      #fff;
+  --c-on-dark-body: #D5DAE0;
+  --c-on-dark-muted:#B8BEC6;   /* 8,4:1 sur #2B2E35 */
+  --c-on-dark-line: #5A606A;
+
+  /* Typographie : titres condensés en capitales, comme le maillot */
+  --font-sans: 'Barlow', system-ui, sans-serif;
+  --font-title: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --fw-title: 800;
+  --title-transform: uppercase;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --fs-xs: 13px;
+  --fs-sm: 14px;
+  --fs-base: 16px;
+  --fs-md: 17px;
+  --fs-lg: 19px;
+  --fs-xl: 21px;
+  --fs-h3: 28px;
+  --fs-h2: clamp(36px, 5vw, 60px);
+  --fs-h2-lg: clamp(38px, 5.4vw, 68px);
+  --fs-h1: clamp(48px, 7vw, 92px);
+  --lh-tight: 0.98;
+  --lh-body: 1.55;
+  --tracking-title: 0.01em;
+  --tracking-eyebrow: 0.14em;
+
+  /* Espacements et gabarit */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-7: 32px; --space-8: 44px;
+  --section-y: clamp(64px, 7.5vw, 104px);
+  --section-y-compact: clamp(44px, 5vw, 72px);
+  --section-y-large: clamp(72px, 9vw, 128px);
+  --gutter: clamp(16px, 4vw, 48px);
+  --container: 1240px;
+  --container-narrow: 760px;
+
+  /* Formes : angles francs, sportifs */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 14px;
+  --radius-pill: 99px;
+  --radius-btn: 6px;
+
+  /* En-tête noir, menu en capitales condensées */
+  --c-header-bg:       #1F2227;
+  --c-header-line:     #353941;
+  --c-header-logo:     #FFFFFF;
+  --c-header-ink:      #FFFFFF;
+  --c-header-muted:    #B8BEC6;
+  --c-header-hover-bg: #353941;
+  --c-header-hover-ink:#FBC735;
+  --header-nav-font:   var(--font-title);
+  --header-nav-size:   18px;
+  --header-nav-weight: 700;
+  --header-nav-tracking: 0.04em;
+  --header-nav-transform: uppercase;
+}
+
+/* Couleur d'un élément selon son métier : data-metier="climatisation" etc. */
+[data-metier]                     { --metier: var(--c-primary); --metier-soft: oklch(0.95 0.02 160); --metier-ink: oklch(0.30 0.04 160); }
+[data-metier="climatisation"]     { --metier: var(--c-clim);    --metier-soft: oklch(0.95 0.02 200); --metier-ink: oklch(0.30 0.05 200); }
+[data-metier="pompe-a-chaleur"]   { --metier: var(--c-pac);     --metier-soft: oklch(0.96 0.03 130); --metier-ink: oklch(0.32 0.06 130); }
+[data-metier="electricite"]       { --metier: var(--c-elec);    --metier-soft: oklch(0.95 0.02 160); --metier-ink: oklch(0.30 0.04 160); }
+[data-metier="solaire"]           { --metier: var(--c-solaire); --metier-soft: oklch(0.96 0.03 125); --metier-ink: oklch(0.32 0.06 130); }

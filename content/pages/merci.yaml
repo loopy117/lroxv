@@ -1,0 +1,16 @@
+titre: Demande envoyée
+statut: publie
+seo:
+  titre: Demande envoyée · La Roque Ovalie XV
+  description: Votre demande a bien été envoyée au club. Nous l'étudions et revenons vers vous par e-mail, avec une réponse claire et sans engagement de votre part.
+  noindex: true
+fil_ariane: false
+sections:
+  - block: hero
+    variant: minimal
+    titre: Merci, votre demande est bien partie
+    texte: Nous l'étudions et revenons vers vous par e-mail.
+    ctas:
+      - label: Retour à l'accueil
+        href: /
+        style: primaire

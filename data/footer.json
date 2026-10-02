@@ -1,0 +1,14 @@
+{
+  "colonnes": [],
+  "legal": [
+    {
+      "page": "/mentions-legales"
+    },
+    {
+      "page": "/confidentialite"
+    },
+    {
+      "page": "/accessibilite"
+    }
+  ]
+}

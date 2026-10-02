@@ -1,0 +1,32 @@
+{
+  "principal": [
+    {
+      "href": "/#equipes",
+      "label": "Équipes"
+    },
+    {
+      "href": "/#calendrier",
+      "label": "Calendrier"
+    },
+    {
+      "href": "/#actualites",
+      "label": "Actualités"
+    },
+    {
+      "href": "/#galerie",
+      "label": "Galerie"
+    },
+    {
+      "href": "/#partenaires",
+      "label": "Partenaires"
+    },
+    {
+      "href": "/#infos",
+      "label": "Infos pratiques"
+    }
+  ],
+  "bouton": {
+    "label": "S'inscrire",
+    "href": "/#inscription"
+  }
+}

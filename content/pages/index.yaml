@@ -1,0 +1,137 @@
+titre: Accueil
+statut: publie
+seo:
+  titre: La Roque Ovalie XV · Club de rugby à La Roque-d'Anthéron
+  description: "Club de rugby de La Roque-d'Anthéron : baby rugby, école de rugby de 3 à 14 ans, moins de 16 ans à XV et rugby loisir au stade Michel Bouchard."
+ancres:
+  - école de rugby de La Roque-d'Anthéron
+  - club de rugby de La Roque-d'Anthéron
+# Version provisoire construite avec les blocs existants. Les équipes, le calendrier, les rencontres et les
+# partenaires passeront sur leurs blocs dédiés (equipes, matchs, match-center, partenaires) quand ils existeront.
+sections:
+  - block: hero
+    variant: split
+    background: sombre
+    surtitre: Club de rugby · La Roque-d'Anthéron
+    titre: Le rugby pour tous, de 3 ans aux… beaucoup plus !
+    texte: "École de rugby, moins de 16 ans à XV et rugby loisir : toutes nos séances ont lieu au stade Michel Bouchard. Venez essayer, on vous attend sur le terrain."
+    image:
+      src: /img/accueil/ecole-de-rugby-course.jpg
+      alt: Deux jeunes de l'école de rugby courent ballon en main pendant un entraînement
+    ctas:
+      - label: Inscrire mon enfant
+        href: "#inscription"
+        style: primaire
+      - label: Voir les créneaux
+        href: "#calendrier"
+        style: secondaire
+    points:
+      - Baby rugby et école de rugby
+      - Moins de 16 ans en championnat
+      - Rugby loisir pour les adultes
+
+  - block: features
+    id: equipes
+    variant: grille-icones
+    background: alt
+    surtitre: Nos équipes
+    titre: Une place pour chaque âge
+    intro: Choisissez la catégorie qui vous correspond. Toutes les séances ont lieu au stade Michel Bouchard.
+    items:
+      - titre: École de rugby
+        icone: etoile
+        texte: "Baby rugby, puis les catégories −6, −8, −10, −12 et −14 ans. Le samedi de 10 h à 12 h pour tous, et le mercredi de 18 h à 19 h 30 pour les −12 et −14 ans."
+      - titre: Compétition à XV
+        icone: bouclier
+        texte: "Les moins de 16 ans masculins, engagés en championnat : la suite naturelle de l'école de rugby."
+      - titre: Rugby loisir
+        icone: check
+        texte: "Rugby avec plaquage le vendredi de 19 h à 21 h. Rugby à 5 bien-être, sans plaquage et ouvert aux débutants, le lundi et le mercredi soir."
+
+  - block: features
+    id: calendrier
+    variant: grille-icones
+    surtitre: La semaine au stade
+    titre: Les créneaux d'entraînement
+    items:
+      - titre: Lundi
+        icone: horloge
+        texte: "19 h 30 – 20 h 30 : rugby à 5 bien-être."
+      - titre: Mercredi
+        icone: horloge
+        texte: "18 h – 19 h 30 : −12 et −14 ans. 19 h 30 – 21 h : rugby à 5 bien-être."
+      - titre: Vendredi
+        icone: horloge
+        texte: "19 h – 21 h : rugby loisir avec plaquage."
+      - titre: Samedi
+        icone: horloge
+        texte: "10 h – 12 h : toute l'école de rugby, de −6 à −14 ans."
+
+  - block: texte-image
+    id: actualites
+    variant: image-droite
+    background: alt
+    surtitre: Actualités
+    titre: L'école de rugby au tournoi du RCT
+    contenu: "Vestiaire de pro, pelouse de stade et rencontre avec des joueurs toulonnais : une journée que nos jeunes ne sont pas près d'oublier. [À COMPLÉTER : date et lieu du tournoi]"
+    images:
+      - src: /img/actualites/tournoi-rct-vestiaire.jpg
+        alt: Les jeunes de l'école de rugby dans un vestiaire de stade, derrière la pancarte La Roque Ovalie XV
+
+  - block: galerie
+    id: galerie
+    variant: mosaique
+    surtitre: En images
+    titre: La vie du club
+    images:
+      - src: /img/galerie/photo-equipe-poteaux.jpg
+        alt: Photo d'équipe sous les poteaux du stade
+      - src: /img/galerie/jeunes-joueurs-sourire.jpg
+        alt: Quatre jeunes joueurs souriants au bord du terrain
+      - src: /img/galerie/baby-rugby-tunnel.jpg
+        alt: "Baby rugby : un enfant traverse un tunnel pendant un parcours"
+      - src: /img/galerie/touche.jpg
+        alt: Un joueur soulevé en touche pendant une rencontre
+      - src: /img/galerie/porteur-de-ballon.jpg
+        alt: Un joueur porte le ballon face à la défense adverse
+      - src: /img/galerie/plaquage-ecole.jpg
+        alt: Des jeunes de l'école de rugby jouent un ballon pendant un plateau
+
+  - block: features
+    id: partenaires
+    variant: grille-icones
+    background: sombre
+    surtitre: Ils soutiennent le club
+    titre: Nos partenaires
+    intro: Merci aux entreprises qui font vivre le rugby à La Roque-d'Anthéron.
+    items:
+      - titre: Les Toits en Provence
+        badge: Partenaire principal
+        mis_en_avant: true
+      - titre: "[À COMPLÉTER : nom de l'agence AXA]"
+      - titre: "[À COMPLÉTER : nom du cabinet dentaire]"
+      - titre: Mangion Piscines
+      - titre: Barraco
+      - titre: "[À COMPLÉTER : partenaire de l'épaule gauche du maillot]"
+      - titre: M. Pires
+
+  - block: formulaire
+    id: inscription
+    variant: carte
+    background: accent
+    surtitre: Saison 2026-2027
+    titre: Rejoindre le club
+    intro: "Laissez-nous vos coordonnées : un éducateur vous recontacte pour une séance d'essai et les papiers de licence."
+    formulaire: inscription
+    sujet: Demande d'inscription
+    bouton: Envoyer ma demande
+
+  - block: texte
+    id: infos
+    variant: etroit
+    surtitre: Infos pratiques
+    titre: Stade Michel Bouchard
+    contenu: |
+      [À COMPLÉTER : adresse du stade], 13640 La Roque-d'Anthéron.
+
+      Toutes les séances ont lieu au stade. Pour une question, écrivez-nous avec le formulaire ci-dessus ou retrouvez le club sur [sa page Facebook](https://www.facebook.com/lroxv).

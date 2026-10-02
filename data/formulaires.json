@@ -1,0 +1,49 @@
+{
+  "inscription": {
+    "module": "contact",
+    "prestations": [
+      "Je ne sais pas, conseillez-moi",
+      "Baby rugby",
+      "École de rugby −6 ans",
+      "École de rugby −8 ans",
+      "École de rugby −10 ans",
+      "École de rugby −12 ans",
+      "École de rugby −14 ans",
+      "−16 ans à XV",
+      "Rugby loisir avec plaquage",
+      "Rugby à 5 · bien-être"
+    ],
+    "champs": [
+      "service",
+      "nom",
+      "telephone",
+      "email"
+    ],
+    "obligatoires": [
+      "service",
+      "nom",
+      "email"
+    ],
+    "libelles": {
+      "service": "Catégorie souhaitée",
+      "nom": "Nom et prénom"
+    },
+    "precisions": [
+      {
+        "id": "licencie",
+        "type": "choix",
+        "label": "Déjà licencié dans un club ?",
+        "options": [
+          "Non, c'est une première",
+          "Oui, la saison dernière"
+        ]
+      },
+      {
+        "id": "question",
+        "type": "texte",
+        "label": "Une question ? (expérience, disponibilités…)"
+      }
+    ],
+    "precisions_ouvertes": true
+  }
+}
