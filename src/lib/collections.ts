@@ -37,6 +37,21 @@ export const reglages: Record<NomCollection, ReglagesCollection> = {
       parCategorie: true,
     },
   },
+  equipes: {
+    base: '/equipes',
+    libelle: 'Équipes',
+    detail: true,
+    archive: {
+      titre: 'Nos équipes',
+      intro: 'Toutes les catégories du club, du baby rugby au rugby loisir, avec leurs créneaux d\'entraînement.',
+      carte: 'equipe-carte',
+      affichage: 'grid',
+      options: { colonnes: 3 },
+      ordre: 'ordre asc',
+      parPage: 30,
+      parCategorie: false,
+    },
+  },
   zones: {
     base: '/zones',
     libelle: "Zones d'intervention",

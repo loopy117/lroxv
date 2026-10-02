@@ -46,6 +46,8 @@ function installerDecap() {
 
 /* ------------------------ 2. Schéma JSON → champs Decap ------------------------ */
 const LIBELLES: Record<string, string> = {
+  nom_court: 'Nom court', ages: 'Âges', championnat: 'Championnat', creneaux: 'Créneaux', jour: 'Jour', debut: 'Début (HH:MM)', fin: 'Fin (HH:MM)',
+  encadrants: 'Encadrants (avec leur accord)', nom: 'Nom', role: 'Rôle', categories: 'Types', equipes: 'Équipes',
   titre: 'Titre', surtitre: 'Surtitre', texte: 'Texte', intro: 'Introduction', contenu: 'Contenu', variant: 'Variante',
   background: 'Fond', spacing: 'Espacement', id: 'Ancre (id)', image: 'Image', images: 'Images', ctas: 'Boutons', cta: 'Bouton',
   points: 'Points', items: 'Éléments', lien: 'Lien', label: 'Libellé', href: 'Lien (URL)', style: 'Style', src: 'Fichier', alt: 'Texte alternatif',
@@ -58,7 +60,7 @@ const LIBELLES: Record<string, string> = {
 };
 const LIBELLES_BLOCS: Record<string, string> = {
   hero: 'Ouverture (hero)', texte: 'Texte', 'texte-image': 'Texte et image', features: 'Points forts / étapes', galerie: 'Galerie',
-  slider: 'Diaporama', cta: "Appel à l'action", faq: 'Questions fréquentes', chiffres: 'Chiffres clés', formulaire: 'Formulaire de contact', tarifs: 'Tarifs', partenaires: 'Partenaires',
+  slider: 'Diaporama', cta: "Appel à l'action", faq: 'Questions fréquentes', chiffres: 'Chiffres clés', formulaire: 'Formulaire de contact', tarifs: 'Tarifs', partenaires: 'Partenaires', planning: 'Planning des entraînements',
   boucle: 'Liste automatique (boucle)',
 };
 /** Champs conservés mais non modifiables dans Decap. */

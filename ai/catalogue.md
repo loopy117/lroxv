@@ -197,14 +197,14 @@ Affiche des éléments d'une collection selon une requête, avec une carte et un
 | `titre` | non | texte | ≤ 110 car. — Titre de section (H2) |
 | `intro` | non | texte | ≤ 300 car. |
 | `lien_tout_voir` | non | { label: texte, href: texte } |  |
-| `source` | oui | `services` · `realisations` · `zones` |  |
+| `source` | oui | `services` · `realisations` · `zones` · `equipes` |  |
 | `filtre` | non | objet | Conditions cumulées (ET) |
 | `exclure` | non | liste de texte |  |
 | `elements` | non | liste de texte | Sélection manuelle : remplace filtre, ordre et nombre |
 | `ordre` | non | texte ou liste de texte | défaut : "date desc" |
 | `nombre` | non | entier | ≥ 1, ≤ 24, défaut : 6 |
 | `decalage` | non | entier | ≥ 0, défaut : 0 |
-| `carte` | oui | `service-carte` · `realisation-carte` · `zone-pastille` |  |
+| `carte` | oui | `service-carte` · `realisation-carte` · `equipe-carte` · `zone-pastille` |  |
 | `affichage` | non | `grid` · `slider` · `liste` · `masonry` · `flux` | défaut : "grid" |
 | `options` | non | objet |  |
 | `si_vide` | non | `masquer` · `message` | défaut : "masquer" |
@@ -241,6 +241,23 @@ Partenaires et sponsors par niveau (principal, officiel, soutien), avec logo, ph
 | `intro` | non | texte | ≤ 300 car. |
 | `niveaux` | non | liste de `principal` · `officiel` · `soutien` | ≥ 1 éléments, ≤ 3 éléments — Niveaux affichés, dans cet ordre (défaut : tous). Ex. ["principal"] pour un bandeau discret |
 | `devenir` | non | oui/non | défaut : true — Afficher la case « Devenir partenaire » (data/partenaires.json, champ devenir) |
+
+### `planning`
+
+Créneaux d'entraînement, tirés de la collection equipes. categories : une carte par type d'équipe avec ses catégories et horaires. semaine : un tableau par jour.
+
+- **Variantes** : `categories` · `semaine` (défaut `categories`)
+- **Quand l'utiliser** : Accueil et page Équipes d'un club (categories puis semaine), page d'une équipe (semaine avec equipes: [$courant.id]). Modifier un horaire : content/equipes/, jamais la page.
+- **À éviter** : Recopier des horaires dans un bloc texte ou features.
+
+| Champ | Obligatoire | Type | Limites et notes |
+| --- | --- | --- | --- |
+| `surtitre` | non | texte | ≤ 40 car. — Petit texte en capitales au-dessus du titre |
+| `titre` | non | texte | ≤ 110 car. — Titre de section (H2) |
+| `intro` | non | texte | ≤ 300 car. |
+| `categories` | non | liste de `ecole` · `competition` · `loisir` | ≤ 6 éléments — Types d'équipes affichés (défaut : tous) |
+| `equipes` | non | liste de texte | ≥ 1 éléments, ≤ 20 éléments — Équipes précises (identifiants de content/equipes/), ou $courant.id sur une page d'équipe |
+| `lieu` | non | texte | ≤ 60 car. — Lieu habituel, rappelé sous le planning (ex. « Stade Michel Bouchard ») |
 
 ### `legal`
 
@@ -283,6 +300,7 @@ Carte au clic : aperçu léger sans Google, carte Google Maps chargée seulement
 | --- | --- | --- |
 | `service-carte` | `services` | Grande carte : image, trait de couleur du métier, titre, résumé, prestations, lien. |
 | `realisation-carte` | `realisations` | Image, commune en surtitre, titre du chantier. |
+| `equipe-carte` | `equipes` | Type d'équipe en badge, nom, âges, créneaux de la semaine, lien vers la page de l'équipe. |
 | `zone-pastille` | `zones` | Pastille cliquable colorée selon le métier. À utiliser avec la disposition « flux ». |
 
 ### Dispositions (`affichage`) et leurs `options`
@@ -324,7 +342,7 @@ Un métier / une offre de service. Page de détail : /services/<id>.
 | `date` | non | valeur libre |  |
 | `resume` | non | texte | ≤ 300 car. |
 | `image` | non | { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite` } | Image : { src, alt, focus? } |
-| `categorie` | oui | `artisans` · `commerces` · `restauration` · `services` | Métier (data/taxonomies.json) |
+| `categorie` | oui | `ecole` · `competition` · `loisir` | Métier (data/taxonomies.json) |
 | `mis_en_avant` | non | oui/non | défaut : false |
 | `ordre` | non | entier | ≥ -9007199254740991, défaut : 100 |
 | `seo` | non | { titre?: texte, description?: texte, noindex?: oui/non } | défaut : {"noindex":false} |
@@ -346,7 +364,7 @@ Un chantier réalisé. Page de détail : /realisations/<id>.
 | `date` | oui | valeur libre |  |
 | `resume` | non | texte | ≤ 300 car. |
 | `image` | non | { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite` } | Image : { src, alt, focus? } |
-| `categorie` | oui | `artisans` · `commerces` · `restauration` · `services` | Métier (data/taxonomies.json) |
+| `categorie` | oui | `ecole` · `competition` · `loisir` | Métier (data/taxonomies.json) |
 | `mis_en_avant` | non | oui/non | défaut : false |
 | `ordre` | non | entier | ≥ -9007199254740991, défaut : 100 |
 | `seo` | non | { titre?: texte, description?: texte, noindex?: oui/non } | défaut : {"noindex":false} |
@@ -369,7 +387,7 @@ Une page locale « métier + ville » pour le référencement. Page de détail :
 | `date` | non | valeur libre |  |
 | `resume` | non | texte | ≤ 300 car. |
 | `image` | non | { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite` } | Image : { src, alt, focus? } |
-| `categorie` | oui | `artisans` · `commerces` · `restauration` · `services` | Métier (data/taxonomies.json) |
+| `categorie` | oui | `ecole` · `competition` · `loisir` | Métier (data/taxonomies.json) |
 | `mis_en_avant` | non | oui/non | défaut : false |
 | `ordre` | non | entier | ≥ -9007199254740991, défaut : 100 |
 | `seo` | non | { titre?: texte, description?: texte, noindex?: oui/non } | défaut : {"noindex":false} |
@@ -379,9 +397,34 @@ Une page locale « métier + ville » pour le référencement. Page de détail :
 
 Corps Markdown facultatif après le frontmatter (affiché sur la page de détail). `sections` facultatif : blocs ajoutés après le corps.
 
+### `equipes` — dossier `content/equipes/`, un fichier `<id>.md`
+
+Une équipe ou une catégorie d'âge, avec ses créneaux. Le type (école, compétition, loisir) est la catégorie. Page de détail : /equipes/<id>.
+
+| Champ | Obligatoire | Type | Limites et notes |
+| --- | --- | --- | --- |
+| `titre` | oui | texte | ≥ 3 car., ≤ 90 car. |
+| `statut` | non | `brouillon` · `publie` · `programme` | défaut : "publie" |
+| `date` | non | valeur libre |  |
+| `resume` | non | texte | ≤ 300 car. |
+| `image` | non | { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite` } | Image : { src, alt, focus? } |
+| `categorie` | oui | `ecole` · `competition` · `loisir` | Métier (data/taxonomies.json) |
+| `mis_en_avant` | non | oui/non | défaut : false |
+| `ordre` | non | entier | ≥ -9007199254740991, défaut : 100 |
+| `seo` | non | { titre?: texte, description?: texte, noindex?: oui/non } | défaut : {"noindex":false} |
+| `ancres` | non | liste de texte | ≤ 6 éléments — Expressions qui, dans le texte des autres pages, deviennent un lien vers celle-ci (ex. « pompe à chaleur de piscine »). Précises, 2 à 6 mots ; jamais « ici », « nos services ». |
+| `role` | non | `aimant` · `seo` | aimant : élément que le visiteur a envie d'ouvrir, cible des liens d'engagement. seo : page d'entrée depuis Google (les zones le sont par défaut). |
+| `nom_court` | oui | texte | ≥ 2 car., ≤ 30 car. — Nom court affiché dans les listes et le planning (ex. « −12 ans », « Baby rugby ») |
+| `ages` | non | texte | ≤ 60 car. — Âges ou années de naissance, seulement si le club les a donnés |
+| `championnat` | non | texte | ≤ 80 car. — Compétition disputée (équipes en championnat) |
+| `creneaux` | non | liste de { jour: `lundi` · `mardi` · `mercredi` · `jeudi` · `vendredi` · `samedi` · `dimanche`, debut: texte, fin: texte, lieu?: texte } | ≤ 6 éléments — Entraînements de la semaine |
+| `encadrants` | non | liste de { nom: texte, role?: texte } | ≤ 6 éléments — Éducateurs et entraîneurs : nom affiché seulement avec leur accord |
+
+Corps Markdown facultatif après le frontmatter (affiché sur la page de détail). `sections` facultatif : blocs ajoutés après le corps.
+
 ## Taxonomies (`data/taxonomies.json`)
 
-- **Métiers** (`categorie`) : `artisans` (Artisans du bâtiment), `commerces` (Commerces), `restauration` (Restauration), `services` (Services et professions libérales)
+- **Métiers** (`categorie`) : `ecole` (École de rugby), `competition` (Compétition), `loisir` (Rugby loisir)
 - **Tags de `realisations`** : `site-vitrine`, `refonte`, `referencement`
 
 Une valeur absente de ces listes est refusée. Pour en ajouter une, la proposer dans le rapport.

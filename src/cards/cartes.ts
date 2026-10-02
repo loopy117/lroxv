@@ -4,6 +4,7 @@ import type { NomCollection } from '../schemas/collections';
 export const cartes = {
   'service-carte': { collection: 'services', description: 'Grande carte : image, trait de couleur du métier, titre, résumé, prestations, lien.' },
   'realisation-carte': { collection: 'realisations', description: 'Image, commune en surtitre, titre du chantier.' },
+  'equipe-carte': { collection: 'equipes', description: 'Type d\'équipe en badge, nom, âges, créneaux de la semaine, lien vers la page de l\'équipe.' },
   'zone-pastille': { collection: 'zones', description: 'Pastille cliquable colorée selon le métier. À utiliser avec la disposition « flux ».' },
 } as const satisfies Record<string, { collection: NomCollection; description: string }>;
 

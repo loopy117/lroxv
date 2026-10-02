@@ -1,9 +1,12 @@
 import { z } from 'astro/zod';
 import taxonomies from '../../data/taxonomies.json' with { type: 'json' };
 import { image, metier } from './communs';
+import { JOURS } from './site';
 
 const tagsDe = (collection: keyof typeof taxonomies.tags) =>
   z.array(z.enum(Object.keys(taxonomies.tags[collection]) as [string, ...string[]])).max(6).default([]);
+
+const heure = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'heure attendue au format HH:MM (ex. 18:30)');
 
 const seo = z
   .object({
@@ -70,6 +73,36 @@ export const collectionSchemas = {
     })
     .strict()
     .describe("Une page locale « métier + ville » pour le référencement. Page de détail : /zones/<id>."),
+
+  equipes: z
+    .object({
+      ...communs,
+      nom_court: z.string().min(2).max(30).describe('Nom court affiché dans les listes et le planning (ex. « −12 ans », « Baby rugby »)'),
+      ages: z.string().max(60).optional().describe('Âges ou années de naissance, seulement si le club les a donnés'),
+      championnat: z.string().max(80).optional().describe('Compétition disputée (équipes en championnat)'),
+      creneaux: z
+        .array(
+          z
+            .object({
+              jour: z.enum(JOURS),
+              debut: heure,
+              fin: heure,
+              lieu: z.string().max(60).optional().describe('Si différent du lieu habituel'),
+            })
+            .strict()
+            .refine((c) => c.fin > c.debut, { message: 'fin avant le début', path: ['fin'] }),
+        )
+        .max(6)
+        .default([])
+        .describe('Entraînements de la semaine'),
+      encadrants: z
+        .array(z.object({ nom: z.string().min(2).max(60), role: z.string().max(40).optional() }).strict())
+        .max(6)
+        .default([])
+        .describe('Éducateurs et entraîneurs : nom affiché seulement avec leur accord'),
+    })
+    .strict()
+    .describe("Une équipe ou une catégorie d'âge, avec ses créneaux. Le type (école, compétition, loisir) est la catégorie. Page de détail : /equipes/<id>."),
 } as const;
 
 export type NomCollection = keyof typeof collectionSchemas;

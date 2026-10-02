@@ -1,9 +1,8 @@
 {
   "metiers": {
-    "artisans": "Artisans du bâtiment",
-    "commerces": "Commerces",
-    "restauration": "Restauration",
-    "services": "Services et professions libérales"
+    "ecole": "École de rugby",
+    "competition": "Compétition",
+    "loisir": "Rugby loisir"
   },
   "tags": {
     "realisations": {

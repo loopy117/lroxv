@@ -41,6 +41,25 @@ export function gabaritDetail(collection: NomCollection, e: { id: string; data: 
           ctaFin,
         ],
       };
+    case 'equipes': {
+      const encadrants = (d.encadrants ?? []) as { nom: string; role?: string }[];
+      return {
+        avant: [
+          { block: 'hero', variant: d.image ? 'split' : 'minimal', surtitre: [metier, d.ages ?? d.championnat].filter(Boolean).join(' · '), titre: d.titre, texte: d.resume, image: d.image,
+            ctas: [{ label: 'Venir essayer', href: '/#inscription', style: 'primaire' }] },
+          { block: 'planning', variant: 'semaine', titre: 'Les entraînements', equipes: ['$courant.id'] },
+          ...(encadrants.length >= 2
+            ? [{ block: 'features', variant: 'liste', titre: "L'encadrement", items: encadrants.map((x) => ({ icone: 'check', titre: x.nom, texte: x.role })) }]
+            : encadrants.length === 1
+              ? [{ block: 'texte', titre: "L'encadrement", contenu: `**${encadrants[0].nom}**${encadrants[0].role ? `, ${encadrants[0].role}` : ''}` }]
+              : []),
+        ],
+        apres: [
+          { block: 'boucle', background: 'alt', titre: `${metier} : les autres catégories`, source: 'equipes', filtre: { categorie: '$courant.categorie' }, exclure: ['$courant.id'], ordre: 'ordre asc', nombre: 6, carte: 'equipe-carte', affichage: 'grid' },
+          ctaFin,
+        ],
+      };
+    }
     case 'zones':
       return {
         avant: [{ block: 'hero', variant: 'minimal', surtitre: d.ville, titre: d.titre, texte: d.resume, ctas: [devis] }],

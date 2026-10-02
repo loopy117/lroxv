@@ -165,6 +165,13 @@ function verifierContenu(fichier: string, donnees: any, publie: boolean, courant
       if (/provisoire/.test(f) && publie) provisoires.add(f);
       if (v.alt === '' ) signaler('avertissement', fichier, [...chemin, 'alt'], 'image marquée décorative (alt vide) : à confirmer');
     }
+    if (v && typeof v === 'object' && v.block === 'planning') {
+      const ids = new Set((collections as any).equipes?.map((e: any) => e.id) ?? []);
+      for (const [k, x] of (v.equipes ?? []).entries()) {
+        if (x === '$courant.id') { if (!courant) signaler('erreur', fichier, [...chemin, 'equipes', k], '$courant.id n\'est utilisable que sur une page d\'équipe'); }
+        else if (!ids.has(x)) signaler('erreur', fichier, [...chemin, 'equipes', k], `équipe « ${x} » absente de content/equipes/`);
+      }
+    }
     if (v && typeof v === 'object' && v.block === 'boucle') {
       const txt = JSON.stringify(v);
       if (!courant && txt.includes('$courant')) { signaler('erreur', fichier, chemin, '$courant n\'est utilisable que dans une page de détail'); return; }

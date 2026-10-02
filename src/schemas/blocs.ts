@@ -6,7 +6,7 @@
 import { z } from 'astro/zod';
 import formulairesSite from '../../data/formulaires.json' with { type: 'json' };
 import { NIVEAUX_PARTENAIRES } from './partenaires';
-import { image, cta, lien, icone, markdown, optionsCommunes, entete } from './communs';
+import { image, cta, lien, icone, markdown, optionsCommunes, entete, metier } from './communs';
 import { collectionSchemas, nomsCollections, type NomCollection } from './collections';
 import { cartes, nomsCartes } from '../cards/cartes';
 import { illustration } from '../illustrations/noms';
@@ -328,6 +328,28 @@ export const partenairesBloc = z
     eviter: 'Recopier les partenaires dans un autre bloc ; plus d\'un bloc partenaires en grille par page.',
   });
 
+export const planning = z
+  .object({
+    block: z.literal('planning'),
+    variant: z.enum(['categories', 'semaine']).default('categories'),
+    ...optionsCommunes,
+    ...entete,
+    categories: z.array(metier).max(6).optional().describe('Types d\'équipes affichés (défaut : tous)'),
+    equipes: z
+      .array(z.string().regex(/^(\$courant\.id|[a-z0-9-]+)$/, 'identifiant d\'équipe ou $courant.id'))
+      .min(1)
+      .max(20)
+      .optional()
+      .describe('Équipes précises (identifiants de content/equipes/), ou $courant.id sur une page d\'équipe'),
+    lieu: z.string().max(60).optional().describe('Lieu habituel, rappelé sous le planning (ex. « Stade Michel Bouchard »)'),
+  })
+  .strict()
+  .meta({
+    role: 'Créneaux d\'entraînement, tirés de la collection equipes. categories : une carte par type d\'équipe avec ses catégories et horaires. semaine : un tableau par jour.',
+    quand: 'Accueil et page Équipes d\'un club (categories puis semaine), page d\'une équipe (semaine avec equipes: [$courant.id]). Modifier un horaire : content/equipes/, jamais la page.',
+    eviter: 'Recopier des horaires dans un bloc texte ou features.',
+  });
+
 export const legal = z
   .object({
     block: z.literal('legal'),
@@ -361,8 +383,8 @@ export const carte = z
     eviter: "Plus d'une carte par page ; une carte sur une page de service (le lien Itinéraire du contact suffit).",
   });
 
-export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, legal, carte } as const;
+export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte } as const;
 export type NomBloc = keyof typeof blocs;
 
-export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, legal, carte]);
+export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte]);
 export type Section = z.infer<typeof section>;

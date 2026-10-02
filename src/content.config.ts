@@ -8,5 +8,6 @@ export const collections = {
   pages: defineCollection({ loader: glob({ pattern: '**/*.yaml', base: './content/pages' }), schema: page }),
   services: defineCollection({ loader: glob({ pattern: '*.md', base: './content/services' }), schema: collectionSchemas.services }),
   realisations: defineCollection({ loader: glob({ pattern: '*.md', base: './content/realisations' }), schema: collectionSchemas.realisations }),
+  equipes: defineCollection({ loader: glob({ pattern: '*.md', base: './content/equipes' }), schema: collectionSchemas.equipes }),
   zones: defineCollection({ loader: glob({ pattern: '*.md', base: './content/zones' }), schema: collectionSchemas.zones }),
 };

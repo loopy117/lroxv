@@ -6,8 +6,7 @@ seo:
 ancres:
   - école de rugby de La Roque-d'Anthéron
   - club de rugby de La Roque-d'Anthéron
-# Version provisoire : les équipes, le calendrier et les rencontres passeront sur leurs blocs dédiés
-# (equipes, matchs, match-center) quand ils existeront.
+# Les rencontres (calendrier, résultats) passeront sur le bloc match-center quand il existera.
 sections:
   - block: hero
     variant: split
@@ -30,42 +29,20 @@ sections:
       - Moins de 16 ans en championnat
       - Rugby loisir pour les adultes
 
-  - block: features
+  - block: planning
     id: equipes
-    variant: grille-icones
+    variant: categories
     background: alt
     surtitre: Nos équipes
     titre: Une place pour chaque âge
-    intro: Choisissez la catégorie qui vous correspond. Toutes les séances ont lieu au stade Michel Bouchard.
-    items:
-      - titre: École de rugby
-        icone: etoile
-        texte: "Baby rugby, puis les catégories −6, −8, −10, −12 et −14 ans. Le samedi de 10 h à 12 h pour tous, et le mercredi de 18 h à 19 h 30 pour les −12 et −14 ans."
-      - titre: Compétition à XV
-        icone: bouclier
-        texte: "Les moins de 16 ans masculins, engagés en championnat : la suite naturelle de l'école de rugby."
-      - titre: Rugby loisir
-        icone: check
-        texte: "Rugby avec plaquage le vendredi de 19 h à 21 h. Rugby à 5 bien-être, sans plaquage et ouvert aux débutants, le lundi et le mercredi soir."
+    intro: Choisissez la catégorie qui vous correspond pour voir sa page, ses créneaux et ses actualités.
 
-  - block: features
+  - block: planning
     id: calendrier
-    variant: grille-icones
+    variant: semaine
     surtitre: La semaine au stade
     titre: Les créneaux d'entraînement
-    items:
-      - titre: Lundi
-        icone: horloge
-        texte: "19 h 30 – 20 h 30 : rugby à 5 bien-être."
-      - titre: Mercredi
-        icone: horloge
-        texte: "18 h – 19 h 30 : −12 et −14 ans. 19 h 30 – 21 h : rugby à 5 bien-être."
-      - titre: Vendredi
-        icone: horloge
-        texte: "19 h – 21 h : rugby loisir avec plaquage."
-      - titre: Samedi
-        icone: horloge
-        texte: "10 h – 12 h : toute l'école de rugby, de −6 à −14 ans."
+    lieu: stade Michel Bouchard
 
   - block: texte-image
     id: actualites
