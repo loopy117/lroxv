@@ -7,7 +7,10 @@
  */
 ---
 <script is:inline>
-(function () {
+(function bouton() {
+  // Aperçu des modifications (<nom>.apercu.…) : sa propre barre remplace ce bouton
+  if (document.readyState === 'loading') return document.addEventListener('DOMContentLoaded', bouton);
+  if (document.getElementById('xm-apercu')) return;
   try {
     if (localStorage.getItem('xm-editeur') !== '1' || sessionStorage.getItem('xm-editeur-masque') === '1') return;
   } catch (e) { return; }
