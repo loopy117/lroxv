@@ -12,13 +12,13 @@
     },
     {
       "id": "axa",
-      "nom": "[À COMPLÉTER : nom de l'agence AXA]",
+      "nom": "AXA La Roque-d'Anthéron",
       "niveau": "officiel",
       "logo": "/img/partenaires/axa.png"
     },
     {
-      "id": "cabinet-dentaire",
-      "nom": "[À COMPLÉTER : nom du cabinet dentaire]",
+      "id": "cabinet-dentaire-minne",
+      "nom": "Cabinet dentaire Minne, Rognes",
       "niveau": "officiel"
     },
     {
@@ -32,11 +32,6 @@
       "nom": "Barraco",
       "niveau": "soutien",
       "logo": "/img/partenaires/barraco.png"
-    },
-    {
-      "id": "epaule-gauche",
-      "nom": "[À COMPLÉTER : partenaire de l'épaule gauche du maillot]",
-      "niveau": "soutien"
     },
     {
       "id": "m-pires",
