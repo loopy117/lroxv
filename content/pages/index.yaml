@@ -50,7 +50,7 @@ sections:
     background: alt
     surtitre: Actualités
     titre: L'école de rugby au tournoi du RCT
-    contenu: "Vestiaire de pro, pelouse de stade et rencontre avec des joueurs toulonnais : une journée que nos jeunes ne sont pas près d'oublier. [À COMPLÉTER : date et lieu du tournoi]"
+    contenu: "Vestiaire de pro, pelouse de stade et rencontre avec des joueurs toulonnais : une journée que nos jeunes ne sont pas près d'oublier."
     images:
       - src: /img/actualites/tournoi-rct-vestiaire.jpg
         alt: Les jeunes de l'école de rugby dans un vestiaire de stade, derrière la pancarte La Roque Ovalie XV
