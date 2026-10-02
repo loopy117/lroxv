@@ -140,7 +140,8 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -q -m "xmedia·ai : $TITRE ($ID)" -m "$(jq -r '.resume' _demande/rapport.json)" -m "Demande client $ID, action $ACTION."
             git push -q origin "$BRANCHE"
-          elif [ "$ACTION" = "realiser" ]; then
+          elif [ "$ACTION" = "realiser" ] && [ -z "$(git rev-list origin/main..HEAD)" ]; then
+            # Rien de nouveau ET rien sur la branche : échec. Travail déjà poussé (relance après incident) : on ouvre la proposition.
             echo "STATUT=echec" >> "$GITHUB_ENV"; echo "::error::Aucune modification produite"; exit 0
           fi
           {
