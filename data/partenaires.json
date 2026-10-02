@@ -13,7 +13,8 @@
     {
       "id": "axa",
       "nom": "[À COMPLÉTER : nom de l'agence AXA]",
-      "niveau": "officiel"
+      "niveau": "officiel",
+      "logo": "/img/partenaires/axa.png"
     },
     {
       "id": "cabinet-dentaire",
@@ -29,7 +30,8 @@
     {
       "id": "barraco",
       "nom": "Barraco",
-      "niveau": "soutien"
+      "niveau": "soutien",
+      "logo": "/img/partenaires/barraco.png"
     },
     {
       "id": "epaule-gauche",
@@ -39,7 +41,8 @@
     {
       "id": "m-pires",
       "nom": "M. Pires",
-      "niveau": "soutien"
+      "niveau": "soutien",
+      "logo": "/img/partenaires/m-pires.png"
     }
   ]
 }
