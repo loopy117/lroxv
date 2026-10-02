@@ -35,7 +35,9 @@ const sortie = join(R, 'public/xmedia-ai/contexte');
 mkdirSync(sortie, { recursive: true });
 // Grille de prix : l'assistant peut répondre sur les tarifs sans les inventer
 const tarifs = existsSync(join(R, 'data/tarifs.json')) ? JSON.parse(readFileSync(join(R, 'data/tarifs.json'), 'utf8')) : undefined;
-writeFileSync(join(sortie, 'site.json'), JSON.stringify({ infos: site, menu, taxonomies, tarifs, pages, collections }, null, 1));
+// Partenaires : l'assistant sait qui figure sur le site et à quel niveau
+const partenaires = existsSync(join(R, 'data/partenaires.json')) ? JSON.parse(readFileSync(join(R, 'data/partenaires.json'), 'utf8')) : undefined;
+writeFileSync(join(sortie, 'site.json'), JSON.stringify({ infos: site, menu, taxonomies, tarifs, partenaires, pages, collections }, null, 1));
 copyFileSync(join(R, 'ai/regles.md'), join(sortie, 'regles.md'));
 // Formulaires métier : le serveur vérifie les envois avec cette copie (spec partie 5)
 if (existsSync(join(R, 'data/formulaires.json'))) copyFileSync(join(R, 'data/formulaires.json'), join(sortie, 'formulaires.json'));

@@ -5,6 +5,7 @@
  */
 import { z } from 'astro/zod';
 import formulairesSite from '../../data/formulaires.json' with { type: 'json' };
+import { NIVEAUX_PARTENAIRES } from './partenaires';
 import { image, cta, lien, icone, markdown, optionsCommunes, entete } from './communs';
 import { collectionSchemas, nomsCollections, type NomCollection } from './collections';
 import { cartes, nomsCartes } from '../cards/cartes';
@@ -306,6 +307,27 @@ export const tarifsBloc = z
     eviter: 'Site sans data/tarifs.json ; recopier des prix dans un autre bloc.',
   });
 
+export const partenairesBloc = z
+  .object({
+    block: z.literal('partenaires'),
+    variant: z.enum(['grille', 'bandeau']).default('grille'),
+    ...optionsCommunes,
+    ...entete,
+    niveaux: z
+      .array(z.enum(NIVEAUX_PARTENAIRES))
+      .min(1)
+      .max(3)
+      .optional()
+      .describe('Niveaux affichés, dans cet ordre (défaut : tous). Ex. ["principal"] pour un bandeau discret'),
+    devenir: z.boolean().default(true).describe('Afficher la case « Devenir partenaire » (data/partenaires.json, champ devenir)'),
+  })
+  .strict()
+  .meta({
+    role: 'Partenaires et sponsors par niveau (principal, officiel, soutien), avec logo, phrase et lien. Les partenaires viennent de data/partenaires.json.',
+    quand: 'grille : page ou section Partenaires (accueil d\'un club, page de mairie). bandeau : rangée de logos discrète en fin de page.',
+    eviter: 'Recopier les partenaires dans un autre bloc ; plus d\'un bloc partenaires en grille par page.',
+  });
+
 export const legal = z
   .object({
     block: z.literal('legal'),
@@ -339,8 +361,8 @@ export const carte = z
     eviter: "Plus d'une carte par page ; une carte sur une page de service (le lien Itinéraire du contact suffit).",
   });
 
-export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, legal, carte } as const;
+export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, legal, carte } as const;
 export type NomBloc = keyof typeof blocs;
 
-export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, legal, carte]);
+export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, legal, carte]);
 export type Section = z.infer<typeof section>;

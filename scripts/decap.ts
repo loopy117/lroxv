@@ -58,7 +58,7 @@ const LIBELLES: Record<string, string> = {
 };
 const LIBELLES_BLOCS: Record<string, string> = {
   hero: 'Ouverture (hero)', texte: 'Texte', 'texte-image': 'Texte et image', features: 'Points forts / étapes', galerie: 'Galerie',
-  slider: 'Diaporama', cta: "Appel à l'action", faq: 'Questions fréquentes', chiffres: 'Chiffres clés', formulaire: 'Formulaire de contact', tarifs: 'Tarifs',
+  slider: 'Diaporama', cta: "Appel à l'action", faq: 'Questions fréquentes', chiffres: 'Chiffres clés', formulaire: 'Formulaire de contact', tarifs: 'Tarifs', partenaires: 'Partenaires',
   boucle: 'Liste automatique (boucle)',
 };
 /** Champs conservés mais non modifiables dans Decap. */
@@ -244,6 +244,27 @@ const reglagesSite = {
     // Grille de prix : seulement pour les sites qui en ont une
     ...(existsSync(join(R, 'data/tarifs.json'))
       ? [{ name: 'tarifs', label: 'Tarifs', file: 'data/tarifs.json', fields: champsObjet(js(tarifsSchema)) }]
+      : []),
+    // Partenaires : seulement pour les sites qui en ont (logos rangés dans media/partenaires/)
+    ...(existsSync(join(R, 'data/partenaires.json'))
+      ? [{
+          name: 'partenaires', label: 'Partenaires', file: 'data/partenaires.json',
+          fields: [
+            { name: 'liste', label: 'Partenaires', widget: 'list', summary: '{{fields.nom}} ({{fields.niveau}})', fields: [
+              { name: 'nom', label: 'Nom', widget: 'string', pattern: ['^.{2,60}$', '2 à 60 caractères'] },
+              { name: 'id', label: 'Identifiant (minuscules, tirets)', widget: 'string', pattern: ['^[a-z0-9-]{2,40}$', 'minuscules, chiffres, tirets'] },
+              { name: 'niveau', label: 'Niveau', widget: 'select', options: [
+                { label: 'Partenaire principal', value: 'principal' }, { label: 'Partenaire officiel', value: 'officiel' }, { label: 'Soutien', value: 'soutien' }] },
+              { name: 'logo', label: 'Logo (PNG, fond transparent de préférence)', widget: 'image', required: false, choose_url: false,
+                media_folder: '/media/partenaires', public_folder: '/img/partenaires' },
+              { name: 'url', label: 'Site du partenaire (https://…)', widget: 'string', required: false, pattern: ['^https://[^\\s"\'<>]+$', 'adresse https:// attendue'] },
+              { name: 'texte', label: 'Une phrase (partenaire principal)', widget: 'string', required: false, pattern: ['^[\\s\\S]{0,140}$', '140 caractères maximum'] },
+              { name: 'actif', label: 'Affiché sur le site', widget: 'boolean', default: true },
+            ] },
+            { name: 'devenir', label: 'Case « Devenir partenaire »', widget: 'object', required: false, collapsed: true, fields: [
+              { name: 'label', label: 'Texte', widget: 'string' }, { name: 'href', label: 'Lien', widget: 'string' }] },
+          ],
+        }]
       : []),
   ],
 };

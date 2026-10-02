@@ -1,0 +1,45 @@
+{
+  "devenir": {
+    "label": "Devenir partenaire",
+    "href": "mailto:contact@lroxv.fr?subject=Devenir%20partenaire"
+  },
+  "liste": [
+    {
+      "id": "les-toits-en-provence",
+      "nom": "Les Toits en Provence",
+      "niveau": "principal",
+      "logo": "/img/partenaires/les-toits-en-provence.png"
+    },
+    {
+      "id": "axa",
+      "nom": "[À COMPLÉTER : nom de l'agence AXA]",
+      "niveau": "officiel"
+    },
+    {
+      "id": "cabinet-dentaire",
+      "nom": "[À COMPLÉTER : nom du cabinet dentaire]",
+      "niveau": "officiel"
+    },
+    {
+      "id": "mangion-piscines",
+      "nom": "Mangion Piscines",
+      "niveau": "officiel",
+      "logo": "/img/partenaires/mangion-piscines.png"
+    },
+    {
+      "id": "barraco",
+      "nom": "Barraco",
+      "niveau": "soutien"
+    },
+    {
+      "id": "epaule-gauche",
+      "nom": "[À COMPLÉTER : partenaire de l'épaule gauche du maillot]",
+      "niveau": "soutien"
+    },
+    {
+      "id": "m-pires",
+      "nom": "M. Pires",
+      "niveau": "soutien"
+    }
+  ]
+}

@@ -21,6 +21,7 @@ import { site as siteSchema } from '../src/schemas/site';
 import formulairesDonnees from '../data/formulaires.json' with { type: 'json' };
 import { formulaires as formulairesSchema } from '../src/schemas/formulaires';
 import { tarifs as tarifsSchema } from '../src/schemas/tarifs';
+import { partenaires as partenairesSchema } from '../src/schemas/partenaires';
 import { manquesLegal } from '../src/lib/legal';
 
 type Niveau = 'erreur' | 'avertissement';
@@ -95,6 +96,22 @@ for (const nom of nomsCollections) {
   } else {
     for (const p of pages) (p.data.sections ?? []).forEach((s: any, k: number) => {
       if (s?.block === 'tarifs') signaler('erreur', p.fichier, ['sections', k], 'bloc tarifs sans data/tarifs.json');
+    });
+  }
+}
+
+// data/partenaires.json : partenaires (facultatif), obligatoire dès qu'une page utilise le bloc partenaires.
+// Logos et marqueurs vérifiés plus bas, avec le reste du contenu (section 3).
+let partenairesDonnees: any = null;
+{
+  const fichier = join(RACINE, 'data/partenaires.json');
+  if (existsSync(fichier)) {
+    partenairesDonnees = JSON.parse(readFileSync(fichier, 'utf8'));
+    const r = partenairesSchema.safeParse(partenairesDonnees);
+    if (!r.success) for (const i of r.error.issues) signaler('erreur', 'data/partenaires.json', i.path as any, i.message);
+  } else {
+    for (const p of pages) (p.data.sections ?? []).forEach((s: any, k: number) => {
+      if (s?.block === 'partenaires') signaler('erreur', p.fichier, ['sections', k], 'bloc partenaires sans data/partenaires.json');
     });
   }
 }
@@ -183,6 +200,18 @@ for (const p of pages) {
   }
 }
 for (const nom of nomsCollections) for (const e of collections[nom]) verifierContenu(e.fichier, { ...e.data, corps: e.corps }, estPublie(e), e);
+
+// Partenaires : marqueurs bloquants seulement si une page publiée affiche le bloc ; logos présents dans media/
+if (partenairesDonnees && Array.isArray(partenairesDonnees.liste)) {
+  const affiche = pages.some((p) => p.data.statut === 'publie' && (p.data.sections ?? []).some((x: any) => x?.block === 'partenaires'));
+  verifierContenu('data/partenaires.json', { liste: partenairesDonnees.liste.map((x: any) => (x?.actif === false ? {} : x)) }, affiche);
+  partenairesDonnees.liste.forEach((x: any, i: number) => {
+    if (typeof x?.logo !== 'string' || !x.logo.startsWith('/img/')) return;
+    const f = 'media/' + x.logo.slice(5);
+    imagesUtilisees.add(f);
+    if (!existsSync(join(RACINE, f))) signaler('erreur', 'data/partenaires.json', ['liste', i, 'logo'], `logo introuvable : ${f}`);
+  });
+}
 
 // Doublons SEO
 const vus = new Map<string, string>();

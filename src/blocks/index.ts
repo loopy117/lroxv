@@ -10,11 +10,12 @@ import Chiffres from './Chiffres.astro';
 import Boucle from './Boucle.astro';
 import Formulaire from './Formulaire.astro';
 import Tarifs from './Tarifs.astro';
+import Partenaires from './Partenaires.astro';
 import Legal from './Legal.astro';
 import Carte from './Carte.astro';
 import type { NomBloc } from '../schemas/blocs';
 
 export const composantsBlocs: Record<NomBloc, any> = {
   hero: Hero, texte: Texte, 'texte-image': TexteImage, features: Features, galerie: Galerie,
-  slider: Slider, cta: Cta, faq: Faq, chiffres: Chiffres, formulaire: Formulaire, boucle: Boucle, tarifs: Tarifs, legal: Legal, carte: Carte,
+  slider: Slider, cta: Cta, faq: Faq, chiffres: Chiffres, formulaire: Formulaire, boucle: Boucle, tarifs: Tarifs, partenaires: Partenaires, legal: Legal, carte: Carte,
 };

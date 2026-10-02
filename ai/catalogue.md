@@ -226,6 +226,22 @@ Grille de prix : création (avec sélecteur de durée d'engagement), formules me
 | `options` | non | oui/non | défaut : true — Afficher les options |
 | `cta` | non | { label: texte, href: texte, style?: `primaire` · `secondaire` } | Bouton sous chaque formule (ex. vers le formulaire d'audit) |
 
+### `partenaires`
+
+Partenaires et sponsors par niveau (principal, officiel, soutien), avec logo, phrase et lien. Les partenaires viennent de data/partenaires.json.
+
+- **Variantes** : `grille` · `bandeau` (défaut `grille`)
+- **Quand l'utiliser** : grille : page ou section Partenaires (accueil d'un club, page de mairie). bandeau : rangée de logos discrète en fin de page.
+- **À éviter** : Recopier les partenaires dans un autre bloc ; plus d'un bloc partenaires en grille par page.
+
+| Champ | Obligatoire | Type | Limites et notes |
+| --- | --- | --- | --- |
+| `surtitre` | non | texte | ≤ 40 car. — Petit texte en capitales au-dessus du titre |
+| `titre` | non | texte | ≤ 110 car. — Titre de section (H2) |
+| `intro` | non | texte | ≤ 300 car. |
+| `niveaux` | non | liste de `principal` · `officiel` · `soutien` | ≥ 1 éléments, ≤ 3 éléments — Niveaux affichés, dans cet ordre (défaut : tous). Ex. ["principal"] pour un bandeau discret |
+| `devenir` | non | oui/non | défaut : true — Afficher la case « Devenir partenaire » (data/partenaires.json, champ devenir) |
+
 ### `legal`
 
 Mentions légales (éditeur, création, hébergeur, conditions d'utilisation) ou politique de confidentialité, générées depuis data/site.json (champ legal).

@@ -6,8 +6,8 @@ seo:
 ancres:
   - école de rugby de La Roque-d'Anthéron
   - club de rugby de La Roque-d'Anthéron
-# Version provisoire construite avec les blocs existants. Les équipes, le calendrier, les rencontres et les
-# partenaires passeront sur leurs blocs dédiés (equipes, matchs, match-center, partenaires) quand ils existeront.
+# Version provisoire : les équipes, le calendrier et les rencontres passeront sur leurs blocs dédiés
+# (equipes, matchs, match-center) quand ils existeront.
 sections:
   - block: hero
     variant: split
@@ -97,23 +97,12 @@ sections:
       - src: /img/galerie/plaquage-ecole.jpg
         alt: Des jeunes de l'école de rugby jouent un ballon pendant un plateau
 
-  - block: features
+  - block: partenaires
     id: partenaires
-    variant: grille-icones
     background: sombre
     surtitre: Ils soutiennent le club
     titre: Nos partenaires
     intro: Merci aux entreprises qui font vivre le rugby à La Roque-d'Anthéron.
-    items:
-      - titre: Les Toits en Provence
-        badge: Partenaire principal
-        mis_en_avant: true
-      - titre: "[À COMPLÉTER : nom de l'agence AXA]"
-      - titre: "[À COMPLÉTER : nom du cabinet dentaire]"
-      - titre: Mangion Piscines
-      - titre: Barraco
-      - titre: "[À COMPLÉTER : partenaire de l'épaule gauche du maillot]"
-      - titre: M. Pires
 
   - block: formulaire
     id: inscription
