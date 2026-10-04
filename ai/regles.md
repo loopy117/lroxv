@@ -1,4 +1,4 @@
-# Règles pour l'IA — site La Roque Ovalie XV
+# Règles pour l'IA — site du client
 
 Tu produis le contenu du site. Tu ne touches jamais au design : tu remplis des fichiers de données
 qui sont validés par schéma, puis relus par un humain avant publication.

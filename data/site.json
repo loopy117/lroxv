@@ -1,5 +1,6 @@
 {
   "nom": "La Roque Ovalie XV",
+  "modele": "club",
   "baseline": "Rugby à La Roque-d'Anthéron",
   "description": "Club de rugby de La Roque-d'Anthéron : école de rugby de 3 à 14 ans, équipe des moins de 16 ans à XV et rugby loisir, au stade Michel Bouchard.",
   "url": "https://www.lroxv.fr",
@@ -39,5 +40,9 @@
         "style": "primaire"
       }
     ]
+  },
+  "club": {
+    "sport": "Rugby",
+    "stade": "stade Michel Bouchard"
   }
 }

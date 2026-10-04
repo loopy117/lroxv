@@ -143,7 +143,7 @@ const lienConfidentialite = confidentialite?.publie ? '/confidentialite' : null;
       <aside class="fm__coord">
         <p class="eyebrow">Nous joindre</p>
         <a class="fm__tel" href={tel}>{site.telephone}</a>
-        <a href={`mailto:${site.email}`}>{site.email}</a>
+        {site.email && <a href={`mailto:${site.email}`}>{site.email}</a>}
         <p>{site.horaires}</p>
         {site.urgence?.actif && <p class="fm__urgence"><span aria-hidden="true">●</span> {site.urgence.texte}</p>}
         <p class="fm__zone">{site.zone_resume}</p>

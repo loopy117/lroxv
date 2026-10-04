@@ -28,7 +28,7 @@ export function entreprise(s: Site, base: string): Record<string, unknown> {
     description: s.description,
     url: base + '/',
     telephone: s.telephone,
-    email: s.email,
+    email: s.email || undefined,
     address: {
       '@type': 'PostalAddress',
       ...(s.afficher_adresse && s.adresse.rue ? { streetAddress: s.adresse.rue } : {}),

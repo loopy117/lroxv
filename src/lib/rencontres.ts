@@ -3,6 +3,9 @@
  * Un plateau ou un tournoi d'école de rugby n'a pas de score officiel : on n'affiche jamais de résultat inventé.
  */
 import { TYPES_RENCONTRES } from '../schemas/collections';
+import site from '../../data/site.json' with { type: 'json' };
+const club = (site as any).nom as string;
+const stade = ((site as any).club?.stade ?? '') as string;
 
 export interface Rencontre { id: string; data: any }
 
@@ -13,8 +16,8 @@ export const jourRencontre = (d: Date, avecAnnee = false) => (avecAnnee ? fmtJou
 export const heureFr = (h?: string) => (h ? h.replace(/^0(\d)/, '$1').replace(':', ' h ').replace(/ h 00$/, ' h') : '');
 export const typeRencontre = (t: string) => (TYPES_RENCONTRES as Record<string, string>)[t] ?? t;
 
-/** Intitulé : « LROXV – Pertuis », « Pertuis – LROXV », ou « Plateau à Lauris ». */
-export function intitule(r: Rencontre, club = 'La Roque Ovalie XV'): string {
+/** Intitulé : « Club – Pertuis », « Pertuis – Club », ou le titre (« Plateau à Lauris »). */
+export function intitule(r: Rencontre): string {
   const d = r.data;
   if (!d.adversaire) return d.titre;
   return d.domicile ? `${club} – ${d.adversaire}` : `${d.adversaire} – ${club}`;
@@ -36,7 +39,7 @@ export function issue(r: Rencontre): 'victoire' | 'defaite' | 'nul' | null {
 }
 export const libelleIssue = { victoire: 'Victoire', defaite: 'Défaite', nul: 'Match nul' } as const;
 
-export const lieu = (r: Rencontre, stade = 'stade Michel Bouchard') => r.data.lieu ?? (r.data.domicile ? stade : (r.data.adversaire ? `chez ${r.data.adversaire}` : ''));
+export const lieu = (r: Rencontre) => r.data.lieu ?? (r.data.domicile ? stade : (r.data.adversaire ? `chez ${r.data.adversaire}` : ''));
 
 /** Début du jour (UTC, comme les dates des contenus). */
 export const debutDuJour = (m = new Date()) => new Date(m.toISOString().slice(0, 10));

@@ -341,7 +341,7 @@ export const planning = z
       .max(20)
       .optional()
       .describe('Équipes précises (identifiants de content/equipes/), ou $courant.id sur une page d\'équipe'),
-    lieu: z.string().max(60).optional().describe('Lieu habituel, rappelé sous le planning (ex. « Stade Michel Bouchard »)'),
+    lieu: z.string().max(60).optional().describe('Lieu habituel, rappelé sous le planning (ex. « Stade municipal »)'),
   })
   .strict()
   .meta({
@@ -415,8 +415,23 @@ export const frise = z
     eviter: 'Des dates non confirmées par le client.',
   });
 
-export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte, 'match-center': matchCenter, frise } as const;
+export const labelsBloc = z
+  .object({
+    block: z.literal('labels'),
+    variant: z.enum(['cartes', 'bandeau']).default('cartes').describe('cartes : détail (organisme, validité, attestation) · bandeau : une ligne compacte'),
+    ...optionsCommunes,
+    ...entete,
+    elements: z.array(z.string().regex(/^[a-z0-9-]{2,40}$/)).max(20).optional().describe('Identifiants des labels à montrer, dans l\'ordre (tous si vide)'),
+  })
+  .strict()
+  .meta({
+    role: 'Labels, qualifications, assurances et agréments de l\'entreprise (Réglages › Labels et certifications) ; les labels expirés ne s\'affichent jamais.',
+    quand: 'Page certifications (cartes), accueil ou page service (bandeau).',
+    eviter: 'Recopier un label dans un bloc texte : il ne disparaîtrait pas à son expiration.',
+  });
+
+export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte, 'match-center': matchCenter, frise, labels: labelsBloc } as const;
 export type NomBloc = keyof typeof blocs;
 
-export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte, matchCenter, frise]);
+export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte, matchCenter, frise, labelsBloc]);
 export type Section = z.infer<typeof section>;

@@ -14,11 +14,12 @@ import Partenaires from './Partenaires.astro';
 import Planning from './Planning.astro';
 import Legal from './Legal.astro';
 import Carte from './Carte.astro';
+import Labels from './Labels.astro';
 import MatchCenter from './MatchCenter.astro';
 import Frise from './Frise.astro';
 import type { NomBloc } from '../schemas/blocs';
 
 export const composantsBlocs: Record<NomBloc, any> = {
   hero: Hero, texte: Texte, 'texte-image': TexteImage, features: Features, galerie: Galerie,
-  slider: Slider, cta: Cta, faq: Faq, chiffres: Chiffres, formulaire: Formulaire, boucle: Boucle, tarifs: Tarifs, partenaires: Partenaires, planning: Planning, legal: Legal, carte: Carte, 'match-center': MatchCenter, frise: Frise,
+  slider: Slider, cta: Cta, faq: Faq, chiffres: Chiffres, formulaire: Formulaire, boucle: Boucle, tarifs: Tarifs, partenaires: Partenaires, planning: Planning, legal: Legal, carte: Carte, labels: Labels, 'match-center': MatchCenter, frise: Frise,
 };

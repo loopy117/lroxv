@@ -14,15 +14,23 @@ import { stringify } from 'yaml';
 import { z } from 'astro/zod';
 import { blocs } from '../src/schemas/blocs';
 import { collectionSchemas } from '../src/schemas/collections';
+import { collectionsDuSite, blocDuSite, modeleSite } from '../src/schemas/modeles';
 import { page } from '../src/schemas/page';
 import { reglages } from '../src/lib/collections';
 import taxonomies from '../data/taxonomies.json' with { type: 'json' };
 import site from '../data/site.json' with { type: 'json' };
 import { TYPES_ENTREPRISE, JOURS } from '../src/schemas/site';
+import { TYPES_LABELS } from '../src/schemas/labels';
+import icones from '../data/icones.json' with { type: 'json' };
 import { tarifs as tarifsSchema } from '../src/schemas/tarifs';
 
 const VERSION_DECAP = '3.16.3';
-const DEPOT = process.env.DECAP_DEPOT || 'loopy117/lroxv';
+// Dépôt GitHub du site : variable, sinon celui de la construction (GitHub Actions), sinon le dépôt git local
+const depotGit = (): string => {
+  try { return execSync('git remote get-url origin', { encoding: 'utf8' }).trim().replace(/^.*github\.com[/:]/, '').replace(/\.git$/, ''); } catch { return ''; }
+};
+const DEPOT = process.env.DECAP_DEPOT || process.env.GITHUB_REPOSITORY || depotGit();
+if (!/^[\w.-]+\/[\w.-]+$/.test(DEPOT)) throw new Error('Dépôt GitHub du site introuvable : définir DECAP_DEPOT (ex. loopy117/monsite)');
 const R = process.cwd();
 const ADMIN = join(R, 'public/admin');
 
@@ -62,7 +70,7 @@ const LIBELLES: Record<string, string> = {
 const LIBELLES_BLOCS: Record<string, string> = {
   hero: 'Ouverture (hero)', texte: 'Texte', 'texte-image': 'Texte et image', features: 'Points forts / étapes', galerie: 'Galerie',
   slider: 'Diaporama', cta: "Appel à l'action", faq: 'Questions fréquentes', chiffres: 'Chiffres clés', formulaire: 'Formulaire de contact', tarifs: 'Tarifs', partenaires: 'Partenaires', planning: 'Planning des entraînements',
-  boucle: 'Liste automatique (boucle)', 'match-center': 'Prochaine rencontre et dernier résultat', frise: 'Frise chronologique',
+  boucle: 'Liste automatique (boucle)', labels: 'Labels et certifications', 'match-center': 'Prochaine rencontre et dernier résultat', frise: 'Frise chronologique',
 };
 /** Champs conservés mais non modifiables dans Decap. */
 const MASQUES: Record<string, string[]> = {
@@ -156,7 +164,7 @@ function facultatif(f: any): any {
 const js = (sch: any) => z.toJSONSchema(sch, { io: 'input', unrepresentable: 'any' }) as any;
 
 function typesBlocs() {
-  return Object.entries(blocs).map(([nom, sch]) => {
+  return Object.entries(blocs).filter(([nom]) => blocDuSite(nom)).map(([nom, sch]) => {
     const meta: any = (sch as any).meta?.() ?? {};
     return {
       name: nom, label: LIBELLES_BLOCS[nom] ?? nom, summary: '{{fields.titre}}', ...(meta.quand ? { hint: meta.quand } : {}),
@@ -193,7 +201,7 @@ function champsCollection(nom: keyof typeof collectionSchemas) {
 const entreeNav = (avecEnfants: boolean): any[] => [
   { name: 'page', label: 'Page (chemin, ex. /contact)', widget: 'string', required: false },
   { name: 'element', label: 'Élément de collection (ex. services/climatisation)', widget: 'string', required: false },
-  { name: 'collection', label: 'Archive de collection', widget: 'select', required: false, options: Object.keys(collectionSchemas) },
+  { name: 'collection', label: 'Archive de collection', widget: 'select', required: false, options: collectionsDuSite() },
   { name: 'label', label: 'Libellé (facultatif : titre de la page par défaut)', widget: 'string', required: false },
   ...(avecEnfants ? [{ name: 'enfants', label: 'Sous-menu', widget: 'list', required: false, collapsed: true, fields: entreeNav(false) }] : []),
 ];
@@ -242,11 +250,35 @@ const reglagesSite = {
       ],
     },
     {
+      name: 'labels', label: 'Labels et certifications', file: 'data/labels.json',
+      description: 'Qualifications, labels, assurances et agréments. Un label disparaît du site après sa date de fin ; vous êtes prévenu 60 jours avant dans votre espace.',
+      fields: [
+        { name: 'labels', label: 'Labels', label_singular: 'Label', widget: 'list', required: false, max: 20, summary: '{{fields.nom}} {{fields.fin}}', fields: [
+          { name: 'id', label: 'Identifiant (minuscules et tirets, ne pas changer ensuite)', widget: 'string', pattern: ['^[a-z0-9-]{2,40}$', 'minuscules, chiffres, tirets'] },
+          { name: 'nom', label: 'Nom', widget: 'string', hint: 'Ex. QualiPAC, Garantie décennale', pattern: ['^[\\s\\S]{2,80}$', '80 caractères maximum'] },
+          { name: 'type', label: 'Nature', widget: 'select', options: Object.entries(TYPES_LABELS).map(([value, label]) => ({ value, label })) },
+          { name: 'organisme', label: 'Organisme ou assureur', widget: 'string', required: false },
+          { name: 'numero', label: 'Numéro (facultatif)', widget: 'string', required: false },
+          { name: 'fin', label: 'Valable jusqu\'au', widget: 'datetime', required: false, date_format: 'DD/MM/YYYY', time_format: false, format: 'YYYY-MM-DD', picker_utc: true, hint: 'Après cette date, le label disparaît du site.' },
+          { name: 'texte', label: 'Ce que ça garantit au client', widget: 'text', required: false, pattern: ['^[\\s\\S]{0,200}$', '200 caractères maximum'] },
+          { name: 'icone', label: 'Icône (si pas de logo)', widget: 'select', required: false, options: Object.keys(icones) },
+          { name: 'logo', label: 'Logo officiel', widget: 'object', required: false, collapsed: true, fields: [
+            { name: 'src', label: 'Fichier', widget: 'image', required: false, choose_url: false },
+            { name: 'alt', label: 'Texte alternatif', widget: 'string', required: false, hint: 'Ex. Logo QualiPAC' }] },
+          { name: 'document', label: 'Attestation (PDF)', widget: 'file', required: false, choose_url: false },
+          { name: 'verification', label: 'Page officielle de vérification', widget: 'string', required: false, hint: 'Adresse https:// de l\'annuaire de l\'organisme' },
+          { name: 'afficher_fin', label: 'Afficher la date de validité', widget: 'boolean', required: false, default: true },
+        ] },
+      ],
+    },
+    {
       name: 'footer', label: 'Pied de page', file: 'data/footer.json',
       fields: [
         { name: 'colonnes', label: 'Colonnes', widget: 'list', max: 3, summary: '{{fields.titre}}', fields: [
           { name: 'titre', label: 'Titre', widget: 'string' }, { name: 'liens', label: 'Liens', widget: 'list', fields: entreeNav(false) }] },
         { name: 'legal', label: 'Liens légaux', widget: 'list', fields: entreeNav(false) },
+        { name: 'devise', label: 'Devise (après la baseline)', widget: 'string', required: false, hint: 'Facultatif, une courte phrase' },
+        { name: 'logo_taille', label: 'Hauteur du logo (px)', widget: 'number', value_type: 'int', min: 24, max: 120, required: false, default: 52 },
       ],
     },
     // Grille de prix : seulement pour les sites qui en ont une
@@ -322,7 +354,8 @@ function config() {
       },
       ...(imbriquees.length ? [{ name: 'sous_pages', label: 'Sous-pages', label_singular: 'Sous-page', description: 'Pages rangées sous une rubrique, ex. Services › Pompe à chaleur › Piscine (/services/pompe-a-chaleur/piscine).', editor: { preview: false }, files: imbriquees }] : []),
       // Albums : jamais dans l'éditeur, seulement dans l'espace client (vérification du droit à l'image avant publication)
-      ...(Object.keys(collectionSchemas) as (keyof typeof collectionSchemas)[]).filter((nom) => nom !== 'albums').map((nom) => ({
+      // Club : les albums ne passent jamais par l'éditeur (vérification du droit à l'image dans l'espace client)
+      ...collectionsDuSite().filter((nom) => !(modeleSite === 'club' && nom === 'albums')).map((nom) => ({
         name: nom, label: reglages[nom].libelle, folder: `content/${nom}`, extension: 'md', format: 'frontmatter', create: true,
         identifier_field: 'titre', summary: '{{titre}}', slug: '{{slug}}', editor: { preview: false },
         media_folder: `/media/${nom}/{{filename}}`, public_folder: `/img/${nom}/{{filename}}`,

@@ -9,6 +9,7 @@ import { createHash } from 'node:crypto';
 import { parse as parseYaml } from 'yaml';
 import { urlPage, urlElement } from '../src/lib/urls';
 import { nomsCollections } from '../src/schemas/collections';
+import { collectionsDuSite, modeleSite } from '../src/schemas/modeles';
 import site from '../data/site.json' with { type: 'json' };
 import menu from '../data/menu.json' with { type: 'json' };
 import taxonomies from '../data/taxonomies.json' with { type: 'json' };
@@ -25,7 +26,9 @@ const pages = lister(join(R, 'content/pages'), '.yaml').map((f) => {
     sections: (d.sections ?? []).map((s: any) => [s.block, s.variant, s.titre].filter(Boolean).join(' · ')),
   };
 });
-const collections = Object.fromEntries(nomsCollections.map((nom) => [nom, lister(join(R, 'content', nom), '.md').map((f) => {
+// Collections du modèle du site (et toute autre qui aurait des contenus)
+const collectionsSite = nomsCollections.filter((nom) => collectionsDuSite().includes(nom) || lister(join(R, 'content', nom), '.md').length > 0);
+const collections = Object.fromEntries(collectionsSite.map((nom) => [nom, lister(join(R, 'content', nom), '.md').map((f) => {
   const m = readFileSync(f, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
   const d = m ? parseYaml(m[1]) : {};
   const id = relative(join(R, 'content', nom), f).replace(/\.md$/, '');
@@ -42,10 +45,12 @@ writeFileSync(join(sortie, 'site.json'), JSON.stringify({ infos: site, menu, tax
 copyFileSync(join(R, 'ai/regles.md'), join(sortie, 'regles.md'));
 // Formulaires métier : le serveur vérifie les envois avec cette copie (spec partie 5)
 if (existsSync(join(R, 'data/formulaires.json'))) copyFileSync(join(R, 'data/formulaires.json'), join(sortie, 'formulaires.json'));
+// Labels et certifications : l'espace client prévient avant leur date de fin
+if (existsSync(join(R, 'data/labels.json'))) copyFileSync(join(R, 'data/labels.json'), join(sortie, 'labels.json'));
 copyFileSync(join(R, 'ai/catalogue.md'), join(sortie, 'catalogue.md'));
 // Club : équipes et rencontres pour l'écran « Rencontres et scores » de l'espace client (saisie des entraîneurs).
 // sha : empreinte git du fichier, pour savoir si une saisie récente est déjà dans le site en ligne.
-if ((nomsCollections as readonly string[]).includes('rencontres')) {
+if (modeleSite === 'club') {
   const fm = (f: string) => { const m = readFileSync(f, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/); return m ? parseYaml(m[1]) ?? {} : {}; };
   const shaGit = (f: string) => { const b = readFileSync(f); return createHash('sha1').update(`blob ${b.length}\0`).update(b).digest('hex'); };
   const jour = (d: unknown) => (d instanceof Date ? d.toISOString().slice(0, 10) : d ? String(d).slice(0, 10) : undefined);
@@ -61,6 +66,6 @@ if ((nomsCollections as readonly string[]).includes('rencontres')) {
       lieu: d.lieu, competition: d.competition, score_pour: d.score_pour, score_contre: d.score_contre, annulee: d.annulee ?? false,
     };
   }).sort((a, b) => String(a.date).localeCompare(String(b.date)));
-  writeFileSync(join(sortie, 'rencontres.json'), JSON.stringify({ club: site.nom, stade: 'stade Michel Bouchard', equipes, rencontres }, null, 1));
+  writeFileSync(join(sortie, 'rencontres.json'), JSON.stringify({ club: site.nom, stade: (site as any).club?.stade ?? '', equipes, rencontres }, null, 1));
 }
 console.log(`contexte xmedia·ai : ${pages.length} pages, ${Object.values(collections).flat().length} éléments`);

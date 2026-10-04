@@ -26,12 +26,16 @@ export const TYPES_ENTREPRISE = [
   'Store', 'Florist', 'HardwareStore', 'ClothingStore', 'FurnitureStore', 'GardenStore',
 ] as const;
 
+/** Modèles de site : ils décident des collections proposées dans l'éditeur (src/schemas/modeles.ts). */
+export const MODELES_SITE = ['entreprise', 'club'] as const;
+
 export const JOURS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'] as const;
 const heure = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'heure attendue au format HH:MM (ex. 08:30)');
 
 export const site = z
   .object({
     nom: z.string().min(2).max(80),
+    modele: z.enum(MODELES_SITE).default('entreprise').describe('entreprise : services, réalisations, zones · club : équipes, rencontres, actualités, albums'),
     baseline: z.string().max(80),
     description: z.string().max(300),
     url: z.string().url(),
@@ -42,7 +46,7 @@ export const site = z
       .default(['LocalBusiness'])
       .describe("Type d'entreprise pour Google (schema.org) : le plus précis, plusieurs si l'activité est mixte"),
     telephone: z.string().max(30),
-    email: z.string().email(),
+    email: z.union([z.string().email(), z.literal('')]).describe('Vide si le site n\'affiche pas d\'e-mail'),
     horaires: z.string().max(160).describe('Horaires affichés (texte libre)'),
     horaires_detail: z
       .array(z.object({ jours: z.array(z.enum(JOURS)).min(1), ouverture: heure, fermeture: heure }).strict())
@@ -88,6 +92,14 @@ export const site = z
     urgence: z.object({ actif: z.boolean(), texte: z.string().max(80) }).strict(),
     reseaux: z.array(z.string().url()).max(10).default([]),
     fiche_google: z.string().url().optional().describe('Fiche Google Business Profile (lien Google Maps)'),
+    club: z
+      .object({
+        sport: z.string().max(40).describe('Sport, pour Google (ex. « Rugby »)'),
+        stade: z.string().max(80).describe('Lieu des rencontres à domicile (ex. « stade Michel Bouchard »)'),
+      })
+      .strict()
+      .optional()
+      .describe('Club : sport et lieu des rencontres à domicile (modèle club)'),
     cta_defaut: z
       .object({ titre: z.string().max(90), texte: z.string().max(300), ctas: z.array(cta).min(1).max(2), note: z.string().max(80).optional() })
       .strict(),

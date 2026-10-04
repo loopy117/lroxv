@@ -20,6 +20,8 @@ import siteDonnees from '../data/site.json' with { type: 'json' };
 import { site as siteSchema } from '../src/schemas/site';
 import formulairesDonnees from '../data/formulaires.json' with { type: 'json' };
 import { formulaires as formulairesSchema } from '../src/schemas/formulaires';
+import labelsDonnees from '../data/labels.json' with { type: 'json' };
+import { labelsFichier } from '../src/schemas/labels';
 import { tarifs as tarifsSchema } from '../src/schemas/tarifs';
 import { partenaires as partenairesSchema } from '../src/schemas/partenaires';
 import { manquesLegal } from '../src/lib/legal';
@@ -85,6 +87,21 @@ for (const nom of nomsCollections) {
 {
   const r = formulairesSchema.safeParse(formulairesDonnees);
   if (!r.success) for (const i of r.error.issues) signaler('erreur', 'data/formulaires.json', i.path as any, i.message);
+}
+
+// data/labels.json : labels et certifications (expirés : masqués ; 60 jours avant : avertissement)
+{
+  const r = labelsFichier.safeParse(labelsDonnees);
+  if (!r.success) for (const i of r.error.issues) signaler('erreur', 'data/labels.json', i.path as any, i.message);
+  else {
+    const jour = new Date().toISOString().slice(0, 10);
+    const dans60 = new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10);
+    r.data.labels.forEach((l, i) => {
+      if (l.fin && l.fin < jour) signaler('avertissement', 'data/labels.json', ['labels', i, 'fin'], `« ${l.nom} » a expiré le ${l.fin} : il n'est plus affiché sur le site`);
+      else if (l.fin && l.fin <= dans60) signaler('avertissement', 'data/labels.json', ['labels', i, 'fin'], `« ${l.nom} » expire le ${l.fin} : penser au renouvellement`);
+      if (l.document && !existsSync(join(RACINE, 'media/' + l.document.slice(5)))) signaler('erreur', 'data/labels.json', ['labels', i, 'document'], `document introuvable : media/${l.document.slice(5)}`);
+    });
+  }
 }
 
 // data/tarifs.json : grille de prix (facultative), obligatoire dès qu'une page utilise le bloc tarifs

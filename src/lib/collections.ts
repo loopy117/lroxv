@@ -3,6 +3,7 @@
  * Partie « présentation » : l'IA ne modifie pas ce fichier.
  */
 import type { NomCollection } from '../schemas/collections';
+import site from '../../data/site.json' with { type: 'json' };
 
 export interface ReglagesCollection {
   base: string;               // préfixe d'URL
@@ -57,7 +58,7 @@ export const reglages: Record<NomCollection, ReglagesCollection> = {
     base: '/actualites',
     libelle: 'Actualités',
     detail: true,
-    archive: { titre: 'Actualités du club', intro: 'Les nouvelles de La Roque Ovalie XV : rencontres, tournois, vie du club.', carte: 'actualite-carte', affichage: 'grid', options: { colonnes: 3 }, ordre: 'date desc', parPage: 12, parCategorie: false },
+    archive: { titre: 'Actualités du club', intro: `Les nouvelles de ${(site as any).nom} : rencontres, tournois, vie du club.`, carte: 'actualite-carte', affichage: 'grid', options: { colonnes: 3 }, ordre: 'date desc', parPage: 12, parCategorie: false },
   },
   albums: {
     base: '/albums',

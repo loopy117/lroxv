@@ -1,5 +1,6 @@
 import { z } from 'astro/zod';
 import taxonomies from '../../data/taxonomies.json' with { type: 'json' };
+import site from '../../data/site.json' with { type: 'json' };
 import { image, metier } from './communs';
 import { JOURS } from './site';
 
@@ -118,7 +119,7 @@ export const collectionSchemas = {
       date: z.coerce.date().describe('Jour de la rencontre'),
       heure: heure.optional().describe('Coup d\'envoi ou début (HH:MM)'),
       adversaire: z.string().max(80).optional().describe('Club adverse (match) ; vide pour un plateau ou un tournoi'),
-      domicile: z.boolean().default(true).describe('À domicile (stade Michel Bouchard) ou à l\'extérieur'),
+      domicile: z.boolean().default(true).describe('À domicile (stade du club) ou à l\'extérieur'),
       lieu: z.string().max(80).optional().describe('Lieu, si ce n\'est pas le stade du club'),
       competition: z.string().max(80).optional().describe('Ex. « Championnat territorial −16 ans, poule 2 »'),
       score_pour: z.number().int().min(0).max(300).optional().describe('Points marqués par le club'),
@@ -148,7 +149,7 @@ export const collectionSchemas = {
         .min(1)
         .max(80)
         .describe('Photos (80 au plus). Texte alternatif vide : « titre de l\'album, photo n ».'),
-      credit: z.string().max(80).default('© La Roque Ovalie XV'),
+      credit: z.string().max(80).default(`© ${(site as any).nom}`),
       autorisations: z.boolean().default(false).describe('Droit à l\'image vérifié : aucun licencié ayant refusé la diffusion n\'apparaît. Obligatoire pour publier.'),
     })
     .strict()
