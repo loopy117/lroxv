@@ -27,6 +27,9 @@ Cadrage : document « modeles-clients-et-version-club » du projet CMS IA (secti
   droit à l'image contre la liste des refus, validation de l'agence). Ils ne figurent pas dans l'éditeur, et le relais de
   l'éditeur refuse toute écriture dans `content/albums/` et `media/albums/`. La validation du site refuse aussi un album publié
   sans « autorisations ».
+- **Espace des familles** (`/xmedia-ai/famille/`, lien « Espace familles » du menu) : servi par le serveur de l'agence, hors du
+  site public. Connexion par lien e-mail pour les adresses de la liste des licenciés (espace client › Adhérents), demande
+  d'accès pour les oubliés, droit à l'image en ligne, albums réservés aux familles, annonces, documents, message au club.
 - **Frise** : bloc `frise` pour l'histoire et le palmarès, à remplir avec le club.
 
 Commandes : `npm run dev`, `npm run validate`, `npm run build`.

@@ -23,6 +23,10 @@
     {
       "href": "/#infos",
       "label": "Infos pratiques"
+    },
+    {
+      "href": "/xmedia-ai/famille/",
+      "label": "Espace familles"
     }
   ],
   "bouton": {
