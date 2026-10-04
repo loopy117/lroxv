@@ -22,8 +22,11 @@ Cadrage : document « modeles-clients-et-version-club » du projet CMS IA (secti
 - **Saisie depuis le téléphone** : espace client › Rencontres et scores. Les entraîneurs (comptes « Entraîneur », limités
   à leurs équipes) ajoutent les rencontres et les scores, enregistrés directement dans `content/rencontres/` ; le build
   publie pour cela `xmedia-ai/contexte/rencontres.json` (`scripts/contexte-ia.ts`).
-- **Actualités** (`content/actualites/`) et **albums** (`content/albums/`), rattachables à une équipe ; un album ne peut être
-  publié qu'avec « Droit à l'image vérifié » coché (la validation le refuse sinon).
+- **Actualités** (`content/actualites/`), rattachables à une équipe.
+- **Albums** (`content/albums/`) : uniquement par l'espace client › Albums photos (dépôt depuis le téléphone, vérification du
+  droit à l'image contre la liste des refus, validation de l'agence). Ils ne figurent pas dans l'éditeur, et le relais de
+  l'éditeur refuse toute écriture dans `content/albums/` et `media/albums/`. La validation du site refuse aussi un album publié
+  sans « autorisations ».
 - **Frise** : bloc `frise` pour l'histoire et le palmarès, à remplir avec le club.
 
 Commandes : `npm run dev`, `npm run validate`, `npm run build`.

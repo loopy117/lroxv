@@ -321,7 +321,8 @@ function config() {
         description: 'Pages principales du site. Les pages rangées sous une rubrique (ex. /services/pompe-a-chaleur/piscine) sont dans « Sous-pages ». Les pages en brouillon ne sont pas publiées.', fields: champsPage(),
       },
       ...(imbriquees.length ? [{ name: 'sous_pages', label: 'Sous-pages', label_singular: 'Sous-page', description: 'Pages rangées sous une rubrique, ex. Services › Pompe à chaleur › Piscine (/services/pompe-a-chaleur/piscine).', editor: { preview: false }, files: imbriquees }] : []),
-      ...(Object.keys(collectionSchemas) as (keyof typeof collectionSchemas)[]).map((nom) => ({
+      // Albums : jamais dans l'éditeur, seulement dans l'espace client (vérification du droit à l'image avant publication)
+      ...(Object.keys(collectionSchemas) as (keyof typeof collectionSchemas)[]).filter((nom) => nom !== 'albums').map((nom) => ({
         name: nom, label: reglages[nom].libelle, folder: `content/${nom}`, extension: 'md', format: 'frontmatter', create: true,
         identifier_field: 'titre', summary: '{{titre}}', slug: '{{slug}}', editor: { preview: false },
         media_folder: `/media/${nom}/{{filename}}`, public_folder: `/img/${nom}/{{filename}}`,
