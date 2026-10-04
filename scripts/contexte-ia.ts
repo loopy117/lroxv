@@ -5,6 +5,7 @@
  */
 import { readFileSync, readdirSync, existsSync, statSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { createHash } from 'node:crypto';
 import { parse as parseYaml } from 'yaml';
 import { urlPage, urlElement } from '../src/lib/urls';
 import { nomsCollections } from '../src/schemas/collections';
@@ -42,4 +43,24 @@ copyFileSync(join(R, 'ai/regles.md'), join(sortie, 'regles.md'));
 // Formulaires métier : le serveur vérifie les envois avec cette copie (spec partie 5)
 if (existsSync(join(R, 'data/formulaires.json'))) copyFileSync(join(R, 'data/formulaires.json'), join(sortie, 'formulaires.json'));
 copyFileSync(join(R, 'ai/catalogue.md'), join(sortie, 'catalogue.md'));
+// Club : équipes et rencontres pour l'écran « Rencontres et scores » de l'espace client (saisie des entraîneurs).
+// sha : empreinte git du fichier, pour savoir si une saisie récente est déjà dans le site en ligne.
+if ((nomsCollections as readonly string[]).includes('rencontres')) {
+  const fm = (f: string) => { const m = readFileSync(f, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/); return m ? parseYaml(m[1]) ?? {} : {}; };
+  const shaGit = (f: string) => { const b = readFileSync(f); return createHash('sha1').update(`blob ${b.length}\0`).update(b).digest('hex'); };
+  const jour = (d: unknown) => (d instanceof Date ? d.toISOString().slice(0, 10) : d ? String(d).slice(0, 10) : undefined);
+  const equipes = lister(join(R, 'content/equipes'), '.md').map((f) => {
+    const d = fm(f);
+    return { id: relative(join(R, 'content/equipes'), f).replace(/\.md$/, ''), nom: d.nom_court ?? d.titre, categorie: d.categorie, ordre: d.ordre ?? 100, statut: d.statut ?? 'publie' };
+  }).sort((a, b) => a.ordre - b.ordre);
+  const rencontres = lister(join(R, 'content/rencontres'), '.md').map((f) => {
+    const d = fm(f);
+    return {
+      id: relative(join(R, 'content/rencontres'), f).replace(/\.md$/, ''), sha: shaGit(f), titre: d.titre, statut: d.statut ?? 'publie',
+      equipe: d.equipe, type: d.type ?? 'match', date: jour(d.date), heure: d.heure, adversaire: d.adversaire, domicile: d.domicile ?? true,
+      lieu: d.lieu, competition: d.competition, score_pour: d.score_pour, score_contre: d.score_contre, annulee: d.annulee ?? false,
+    };
+  }).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  writeFileSync(join(sortie, 'rencontres.json'), JSON.stringify({ club: site.nom, stade: 'stade Michel Bouchard', equipes, rencontres }, null, 1));
+}
 console.log(`contexte xmedia·ai : ${pages.length} pages, ${Object.values(collections).flat().length} éléments`);

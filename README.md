@@ -19,6 +19,9 @@ Cadrage : document « modeles-clients-et-version-club » du projet CMS IA (secti
   annulée. Compte rendu dans le corps. Elles alimentent `/calendrier` (à venir, puis résultats), les pages des équipes et le
   bloc `match-center` de l'accueil (prochaine rencontre, dernier résultat), qui reste invisible tant que le calendrier est vide.
   Le site est reconstruit chaque matin (4 h 23 UTC) pour que « prochaine rencontre » soit toujours juste.
+- **Saisie depuis le téléphone** : espace client › Rencontres et scores. Les entraîneurs (comptes « Entraîneur », limités
+  à leurs équipes) ajoutent les rencontres et les scores, enregistrés directement dans `content/rencontres/` ; le build
+  publie pour cela `xmedia-ai/contexte/rencontres.json` (`scripts/contexte-ia.ts`).
 - **Actualités** (`content/actualites/`) et **albums** (`content/albums/`), rattachables à une équipe ; un album ne peut être
   publié qu'avec « Droit à l'image vérifié » coché (la validation le refuse sinon).
 - **Frise** : bloc `frise` pour l'histoire et le palmarès, à remplir avec le club.
