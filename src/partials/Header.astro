@@ -52,7 +52,8 @@ const actif = (href: string) => courant === href || (href !== '/' && courant.sta
   .marque { display: flex; align-items: center; gap: 12px; color: var(--c-header-logo, var(--c-ink)); }
   .marque__textes { display: flex; flex-direction: column; gap: 1px; }
   .marque__nom { font-size: 21px; font-weight: 700; letter-spacing: 0.01em; color: var(--c-ink); line-height: 1; }
-  .marque__baseline { font-size: 10.5px; letter-spacing: 0.04em; color: var(--c-header-muted, var(--c-text-muted)); }
+  /* baseline : réglable par le thème du site (sans réglage : hauteur de ligne héritée, pas de largeur maximale) */
+  .marque__baseline { font-size: var(--header-baseline-size, 10.5px); line-height: var(--header-baseline-lh); letter-spacing: var(--header-baseline-tracking, 0.04em); max-width: var(--header-baseline-max); color: var(--c-header-muted, var(--c-text-muted)); }
   .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
   .nav__liste { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
   .nav__item { position: relative; }

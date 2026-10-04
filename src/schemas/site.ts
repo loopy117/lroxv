@@ -92,6 +92,14 @@ export const site = z
     urgence: z.object({ actif: z.boolean(), texte: z.string().max(80) }).strict(),
     reseaux: z.array(z.string().url()).max(10).default([]),
     fiche_google: z.string().url().optional().describe('Fiche Google Business Profile (lien Google Maps)'),
+    libelles: z
+      .object({
+        services: z.string().max(40).optional().describe('Surtitre des pages de service (défaut : « Nos métiers »)'),
+        devis: z.string().max(40).optional().describe('Bouton des pages de service et de zone (défaut : « Demander un devis gratuit »)'),
+      })
+      .strict()
+      .optional()
+      .describe('Libellés propres au site sur les pages générées'),
     club: z
       .object({
         sport: z.string().max(40).describe('Sport, pour Google (ex. « Rugby »)'),

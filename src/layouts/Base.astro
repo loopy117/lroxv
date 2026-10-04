@@ -1,8 +1,12 @@
 ---
 // Polices hébergées avec le site (paquets @fontsource), propres à chaque site : src/site/polices.ts
-import { policeTitre, policeTexte } from '../site/polices';
+import * as polices from '../site/polices';
+// Fichiers de police préchargés : titre et texte (un seul si le site n'a qu'une police)
+const prechargees = [...new Set([(polices as any).policeTitre, (polices as any).policeTexte].filter(Boolean))] as string[];
 import '../styles/tokens.css';
 import '../styles/base.css';
+// Retouches propres au site (fichier du site, chargé après le socle)
+import '../site/site.css';
 import Header from '../partials/Header.astro';
 import Footer from '../partials/Footer.astro';
 import BoutonModifier from '../partials/BoutonModifier.astro';
@@ -57,8 +61,7 @@ const donnees = seo.noindex ? [] : [graphe(site, base, { url, titre, description
     {partage.favicon_svg && <link rel="icon" href="/favicon.svg" type="image/svg+xml" />}
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content={partage.fond} />
-    <link rel="preload" href={policeTitre} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={policeTexte} as="font" type="font/woff2" crossorigin />
+    {prechargees.map((p) => <link rel="preload" href={p} as="font" type="font/woff2" crossorigin />)}
     {donnees.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
   </head>
   <body>

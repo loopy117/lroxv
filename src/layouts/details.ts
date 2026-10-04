@@ -9,7 +9,9 @@ import type { NomCollection } from '../schemas/collections';
 import { jourRencontre, heureFr, intitule, score, issue, libelleIssue, lieu, typeRencontre, aScore } from '../lib/rencontres';
 
 const ctaFin = { block: 'cta', variant: 'carte', spacing: 'compact', ...site.cta_defaut };
-const devis = { label: 'Demander un devis gratuit', href: '/contact', style: 'primaire' };
+// Libellés des pages de détail, réglables par site (data/site.json, « libelles »)
+const L = { services: 'Nos métiers', devis: 'Demander un devis gratuit', ...((site as any).libelles ?? {}) };
+const devis = { label: L.devis, href: '/contact', style: 'primaire' };
 const dateFr = (d?: Date) => (d ? new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(d) : undefined);
 
 /** Sections placées avant le corps Markdown, et après. */
@@ -20,7 +22,7 @@ export function gabaritDetail(collection: NomCollection, e: { id: string; data: 
     case 'services':
       return {
         avant: [
-          { block: 'hero', variant: d.image ? 'split' : 'minimal', surtitre: 'Nos métiers', titre: d.titre, texte: d.resume, image: d.image, ctas: [devis] },
+          { block: 'hero', variant: d.image ? 'split' : 'minimal', surtitre: L.services, titre: d.titre, texte: d.resume, image: d.image, ctas: [devis] },
           { block: 'features', variant: 'grille-icones', titre: 'Nos prestations', items: d.prestations.map((p: any) => ({ icone: 'check', titre: p.label })) },
         ],
         apres: [

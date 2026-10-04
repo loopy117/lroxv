@@ -83,7 +83,7 @@ const url = Astro.url.pathname.replace(/\/$/, '') || '/';
       ? [{ '@context': 'https://schema.org', '@type': 'SportsEvent', name: entree.data.titre, sport: (siteBrut as any).club?.sport, url: base + url,
           startDate: new Date(entree.data.date).toISOString().slice(0, 10) + (entree.data.heure ? `T${entree.data.heure}:00` : ''),
           eventStatus: entree.data.annulee ? 'https://schema.org/EventCancelled' : 'https://schema.org/EventScheduled',
-          location: { '@type': 'Place', name: entree.data.lieu ?? (entree.data.domicile ? ((siteBrut as any).club?.stade ?? (siteBrut as any).nom) : (entree.data.adversaire ?? '')), ...(entree.data.domicile && !entree.data.lieu ? { address: { '@type': 'PostalAddress', addressLocality: (siteBrut as any).adresse.ville, postalCode: (siteBrut as any).adresse.code_postal, addressCountry: (siteBrut as any).adresse.pays ?? 'FR' } } : {}) },
+          location: { '@type': 'Place', name: entree.data.lieu ?? (entree.data.domicile ? (((x: string) => x.charAt(0).toUpperCase() + x.slice(1))((siteBrut as any).club?.stade ?? (siteBrut as any).nom)) : (entree.data.adversaire ?? '')), ...(entree.data.domicile && !entree.data.lieu ? { address: { '@type': 'PostalAddress', addressLocality: (siteBrut as any).adresse.ville, postalCode: (siteBrut as any).adresse.code_postal, addressCountry: (siteBrut as any).adresse.pays ?? 'FR' } } : {}) },
           organizer: { '@type': 'SportsClub', name: (siteBrut as any).nom, url: base } }]
       : [];
   return (
