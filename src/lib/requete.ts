@@ -36,6 +36,8 @@ function resoudre(v: any, courant?: Element): any {
 function valeur(e: Element, champ: string) { return champ === 'id' ? e.id : e.data[champ]; }
 const egal = (a: any, b: any) => (a instanceof Date ? a.toISOString().slice(0, 10) : a) === b;
 const temps = (x: any) => new Date(x).getTime();
+/** « aujourdhui » (début du jour) ou une date. */
+const borne = (x: any, maintenant: Date) => (x === 'aujourdhui' ? new Date(maintenant.toISOString().slice(0, 10)).getTime() : temps(x));
 
 function depuis(expr: string, maintenant: Date): number {
   const [, n, unite] = expr.match(/^(\d+)\s*(\w+)$/)!;
@@ -54,8 +56,8 @@ function correspond(e: Element, champ: string, cond: any, maintenant: Date): boo
   if ('different' in cond && egal(v, cond.different)) return false;
   if (cond.contient && !cond.contient.some((c: any) => liste.includes(c))) return false;
   if (cond.contient_tous && !cond.contient_tous.every((c: any) => liste.includes(c))) return false;
-  if (cond.apres && !(v && temps(v) >= temps(cond.apres))) return false;
-  if (cond.avant && !(v && temps(v) <= temps(cond.avant))) return false;
+  if (cond.apres && !(v && temps(v) >= borne(cond.apres, maintenant))) return false;
+  if (cond.avant && !(v && temps(v) < borne(cond.avant, maintenant))) return false;
   if (cond.depuis && !(v && temps(v) >= depuis(cond.depuis, maintenant))) return false;
   if (cond.min != null && !(typeof v === 'number' && v >= cond.min)) return false;
   if (cond.max != null && !(typeof v === 'number' && v <= cond.max)) return false;

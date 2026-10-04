@@ -52,6 +52,19 @@ export const reglages: Record<NomCollection, ReglagesCollection> = {
       parCategorie: false,
     },
   },
+  rencontres: { base: '/rencontres', libelle: 'Rencontres', detail: true },
+  actualites: {
+    base: '/actualites',
+    libelle: 'Actualités',
+    detail: true,
+    archive: { titre: 'Actualités du club', intro: 'Les nouvelles de La Roque Ovalie XV : rencontres, tournois, vie du club.', carte: 'actualite-carte', affichage: 'grid', options: { colonnes: 3 }, ordre: 'date desc', parPage: 12, parCategorie: false },
+  },
+  albums: {
+    base: '/albums',
+    libelle: 'Albums photo',
+    detail: true,
+    archive: { titre: 'Albums photo', intro: 'Les photos des rencontres, des tournois et de la vie du club.', carte: 'album-carte', affichage: 'grid', options: { colonnes: 3 }, ordre: 'date desc', parPage: 12, parCategorie: false },
+  },
   zones: {
     base: '/zones',
     libelle: "Zones d'intervention",

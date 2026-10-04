@@ -41,6 +41,12 @@ const communs = {
   sections: z.array(z.any()).optional(),
 };
 
+/** Collections du club (rencontres, actualités, albums) : le type d'équipe est facultatif, l'équipe suffit. */
+const communsClub = { ...communs, categorie: metier.optional() };
+const idEquipe = z.string().regex(/^[a-z0-9-]{2,60}$/).describe('Équipe (identifiant de la page équipe, ex. « moins-16-ans »)');
+
+export const TYPES_RENCONTRES = { match: 'Match', plateau: 'Plateau', tournoi: 'Tournoi', amical: 'Match amical' } as const;
+
 export const collectionSchemas = {
   services: z
     .object({
@@ -103,6 +109,50 @@ export const collectionSchemas = {
     })
     .strict()
     .describe("Une équipe ou une catégorie d'âge, avec ses créneaux. Le type (école, compétition, loisir) est la catégorie. Page de détail : /equipes/<id>."),
+
+  rencontres: z
+    .object({
+      ...communsClub,
+      equipe: idEquipe,
+      type: z.enum(Object.keys(TYPES_RENCONTRES) as [string, ...string[]]).default('match').describe('Plateau et tournoi : école de rugby, sans score officiel'),
+      date: z.coerce.date().describe('Jour de la rencontre'),
+      heure: heure.optional().describe('Coup d\'envoi ou début (HH:MM)'),
+      adversaire: z.string().max(80).optional().describe('Club adverse (match) ; vide pour un plateau ou un tournoi'),
+      domicile: z.boolean().default(true).describe('À domicile (stade Michel Bouchard) ou à l\'extérieur'),
+      lieu: z.string().max(80).optional().describe('Lieu, si ce n\'est pas le stade du club'),
+      competition: z.string().max(80).optional().describe('Ex. « Championnat territorial −16 ans, poule 2 »'),
+      score_pour: z.number().int().min(0).max(300).optional().describe('Points marqués par le club'),
+      score_contre: z.number().int().min(0).max(300).optional().describe('Points de l\'adversaire'),
+      annulee: z.boolean().default(false).describe('Rencontre annulée ou reportée'),
+    })
+    .strict()
+    .refine((r) => (r.score_pour == null) === (r.score_contre == null), { message: 'indiquer les deux scores, ou aucun', path: ['score_contre'] })
+    .describe('Une rencontre (match, plateau, tournoi) d\'une équipe. Le compte rendu va dans le corps. Page : /rencontres/<id>.'),
+
+  actualites: z
+    .object({
+      ...communsClub,
+      date: z.coerce.date(),
+      equipe: idEquipe.optional(),
+    })
+    .strict()
+    .describe('Une actualité du club, éventuellement d\'une équipe. Page : /actualites/<id>.'),
+
+  albums: z
+    .object({
+      ...communsClub,
+      date: z.coerce.date().describe('Date de l\'événement photographié'),
+      equipe: idEquipe.optional(),
+      photos: z
+        .array(image.extend({ legende: z.string().max(200).optional() }))
+        .min(1)
+        .max(80)
+        .describe('Photos (80 au plus). Texte alternatif vide : « titre de l\'album, photo n ».'),
+      credit: z.string().max(80).default('© La Roque Ovalie XV'),
+      autorisations: z.boolean().default(false).describe('Droit à l\'image vérifié : aucun licencié ayant refusé la diffusion n\'apparaît. Obligatoire pour publier.'),
+    })
+    .strict()
+    .describe('Un album photo (rencontre, tournoi, fête du club). Page : /albums/<id>.'),
 } as const;
 
 export type NomCollection = keyof typeof collectionSchemas;

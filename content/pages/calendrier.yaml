@@ -1,0 +1,41 @@
+titre: Calendrier et résultats
+statut: publie
+seo:
+  titre: Calendrier et résultats · La Roque Ovalie XV
+  description: "Les rencontres, plateaux et tournois de La Roque Ovalie XV : école de rugby, moins de 16 ans à XV et rugby loisir. Dates, lieux et résultats de la saison."
+sections:
+  - block: hero
+    variant: minimal
+    surtitre: Saison 2026-2027
+    titre: Calendrier et résultats
+    texte: "Matchs, plateaux de l'école de rugby et tournois : où et quand encourager nos équipes."
+  - block: match-center
+    background: sombre
+    titre: En ce moment
+    lien_calendrier: false
+  - block: boucle
+    titre: Prochaines rencontres
+    source: rencontres
+    filtre: { date: { apres: aujourdhui } }
+    ordre: [date asc, heure asc]
+    nombre: 24
+    carte: rencontre-ligne
+    affichage: liste
+    si_vide: message
+    message_vide: "Le calendrier de la saison sera publié ici dès que les dates seront connues."
+  - block: boucle
+    background: alt
+    titre: Résultats
+    source: rencontres
+    filtre: { date: { avant: aujourdhui } }
+    ordre: date desc
+    nombre: 24
+    carte: rencontre-ligne
+    affichage: liste
+  - block: cta
+    variant: carte
+    spacing: compact
+    titre: Envie de jouer ?
+    texte: "Une séance d'essai est possible dans toutes les catégories : laissez-nous vos coordonnées."
+    ctas:
+      - { label: Venir essayer, href: "/#inscription", style: primaire }

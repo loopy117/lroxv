@@ -383,8 +383,40 @@ export const carte = z
     eviter: "Plus d'une carte par page ; une carte sur une page de service (le lien Itinéraire du contact suffit).",
   });
 
-export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte } as const;
+export const matchCenter = z
+  .object({
+    block: z.literal('match-center'),
+    ...optionsCommunes,
+    ...entete,
+    equipe: z.string().regex(/^[a-z0-9-]{2,60}$/).optional().describe('Une seule équipe (identifiant) ; vide = toutes les équipes'),
+    lien_calendrier: z.boolean().default(true).describe('Lien « Tout le calendrier et les résultats »'),
+  })
+  .strict()
+  .meta({
+    role: 'Prochaine rencontre et dernier résultat, calculés depuis la collection rencontres ; invisible tant que le calendrier est vide.',
+    quand: 'Accueil, page d\'une équipe.',
+    eviter: 'Écrire la prochaine rencontre à la main dans un bloc texte : elle ne se mettrait pas à jour.',
+  });
+
+export const frise = z
+  .object({
+    block: z.literal('frise'),
+    ...optionsCommunes,
+    ...entete,
+    items: z
+      .array(z.object({ annee: z.string().min(2).max(12).describe('Ex. « 1987 », « 2023-2024 »'), titre: z.string().min(3).max(90), texte: z.string().max(300).optional(), image: image.optional() }).strict())
+      .min(2)
+      .max(30),
+  })
+  .strict()
+  .meta({
+    role: 'Frise chronologique : dates clés, titres, palmarès.',
+    quand: 'Page « Le club », histoire d\'une association ou d\'une commune.',
+    eviter: 'Des dates non confirmées par le client.',
+  });
+
+export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte, 'match-center': matchCenter, frise } as const;
 export type NomBloc = keyof typeof blocs;
 
-export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte]);
+export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte, matchCenter, frise]);
 export type Section = z.infer<typeof section>;

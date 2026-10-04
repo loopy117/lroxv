@@ -206,6 +206,15 @@ for (const p of pages) {
     if (a === 'clair' && b === 'clair' && s[i - 1].block === s[i].block && s[i].block !== 'texte') signaler('avertissement', p.fichier, ['sections', i], `deux blocs « ${s[i].block} » consécutifs sur fond clair : varier le fond ou la disposition`);
   }
 }
+// Club : rencontres, actualités et albums rattachés à une équipe existante ; album publié = droit à l'image vérifié
+{
+  const equipes = new Set(collections.equipes.map((e) => e.id));
+  for (const nom of ['rencontres', 'actualites', 'albums'] as NomCollection[]) for (const e of collections[nom] ?? []) {
+    const eq = (e.data as any).equipe;
+    if (eq && !equipes.has(eq)) signaler('erreur', e.fichier, 'equipe', `équipe inconnue : « ${eq} » (identifiants : ${[...equipes].join(', ')})`);
+  }
+  for (const e of collections.albums ?? []) if (estPublie(e) && !(e.data as any).autorisations) signaler('erreur', e.fichier, 'autorisations', 'album publié sans vérification du droit à l\'image : cocher « Droit à l\'image vérifié » ou laisser en brouillon');
+}
 for (const nom of nomsCollections) for (const e of collections[nom]) verifierContenu(e.fichier, { ...e.data, corps: e.corps }, estPublie(e), e);
 
 // Partenaires : marqueurs bloquants seulement si une page publiée affiche le bloc ; logos présents dans media/

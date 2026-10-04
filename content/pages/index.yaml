@@ -37,6 +37,11 @@ sections:
     titre: Une place pour chaque âge
     intro: Choisissez la catégorie qui vous correspond pour voir sa page, ses créneaux et ses actualités.
 
+  - block: match-center
+    background: sombre
+    surtitre: Sur le terrain
+    titre: Les rencontres
+
   - block: planning
     id: calendrier
     variant: semaine
@@ -54,6 +59,16 @@ sections:
     images:
       - src: /img/actualites/tournoi-rct-vestiaire.jpg
         alt: Les jeunes de l'école de rugby dans un vestiaire de stade, derrière la pancarte La Roque Ovalie XV
+
+  - block: boucle
+    titre: Les dernières actualités
+    source: actualites
+    ordre: date desc
+    nombre: 3
+    carte: actualite-carte
+    affichage: grid
+    options: { colonnes: 3 }
+    lien_tout_voir: { label: Toutes les actualités, href: /actualites }
 
   - block: galerie
     id: galerie

@@ -197,14 +197,14 @@ Affiche des éléments d'une collection selon une requête, avec une carte et un
 | `titre` | non | texte | ≤ 110 car. — Titre de section (H2) |
 | `intro` | non | texte | ≤ 300 car. |
 | `lien_tout_voir` | non | { label: texte, href: texte } |  |
-| `source` | oui | `services` · `realisations` · `zones` · `equipes` |  |
+| `source` | oui | `services` · `realisations` · `zones` · `equipes` · `rencontres` · `actualites` · `albums` |  |
 | `filtre` | non | objet | Conditions cumulées (ET) |
 | `exclure` | non | liste de texte |  |
 | `elements` | non | liste de texte | Sélection manuelle : remplace filtre, ordre et nombre |
 | `ordre` | non | texte ou liste de texte | défaut : "date desc" |
 | `nombre` | non | entier | ≥ 1, ≤ 24, défaut : 6 |
 | `decalage` | non | entier | ≥ 0, défaut : 0 |
-| `carte` | oui | `service-carte` · `realisation-carte` · `equipe-carte` · `zone-pastille` |  |
+| `carte` | oui | `service-carte` · `realisation-carte` · `equipe-carte` · `rencontre-ligne` · `actualite-carte` · `album-carte` · `zone-pastille` |  |
 | `affichage` | non | `grid` · `slider` · `liste` · `masonry` · `flux` | défaut : "grid" |
 | `options` | non | objet |  |
 | `si_vide` | non | `masquer` · `message` | défaut : "masquer" |
@@ -292,6 +292,35 @@ Carte au clic : aperçu léger sans Google, carte Google Maps chargée seulement
 | `texte` | non | texte | ≤ 1500 car. — Markdown : paragraphes, listes, gras, liens, titres ## et ### (jamais #) |
 | `communes` | non | oui/non | défaut : true — Afficher les communes desservies (data/site.json, villes) |
 
+### `match-center`
+
+Prochaine rencontre et dernier résultat, calculés depuis la collection rencontres ; invisible tant que le calendrier est vide.
+
+- **Quand l'utiliser** : Accueil, page d'une équipe.
+- **À éviter** : Écrire la prochaine rencontre à la main dans un bloc texte : elle ne se mettrait pas à jour.
+
+| Champ | Obligatoire | Type | Limites et notes |
+| --- | --- | --- | --- |
+| `surtitre` | non | texte | ≤ 40 car. — Petit texte en capitales au-dessus du titre |
+| `titre` | non | texte | ≤ 110 car. — Titre de section (H2) |
+| `intro` | non | texte | ≤ 300 car. |
+| `equipe` | non | texte | Une seule équipe (identifiant) ; vide = toutes les équipes |
+| `lien_calendrier` | non | oui/non | défaut : true — Lien « Tout le calendrier et les résultats » |
+
+### `frise`
+
+Frise chronologique : dates clés, titres, palmarès.
+
+- **Quand l'utiliser** : Page « Le club », histoire d'une association ou d'une commune.
+- **À éviter** : Des dates non confirmées par le client.
+
+| Champ | Obligatoire | Type | Limites et notes |
+| --- | --- | --- | --- |
+| `surtitre` | non | texte | ≤ 40 car. — Petit texte en capitales au-dessus du titre |
+| `titre` | non | texte | ≤ 110 car. — Titre de section (H2) |
+| `intro` | non | texte | ≤ 300 car. |
+| `items` | oui | liste de { annee: texte, titre: texte, texte?: texte, image?: { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite` } } | ≥ 2 éléments, ≤ 30 éléments |
+
 ## Boucle : cartes, dispositions, requêtes
 
 ### Cartes
@@ -301,6 +330,9 @@ Carte au clic : aperçu léger sans Google, carte Google Maps chargée seulement
 | `service-carte` | `services` | Grande carte : image, trait de couleur du métier, titre, résumé, prestations, lien. |
 | `realisation-carte` | `realisations` | Image, commune en surtitre, titre du chantier. |
 | `equipe-carte` | `equipes` | Type d'équipe en badge, nom, âges, créneaux de la semaine, lien vers la page de l'équipe. |
+| `rencontre-ligne` | `rencontres` | Date, équipe, intitulé (domicile – extérieur), lieu, score et issue, ou « À venir ». Avec la disposition « liste ». |
+| `actualite-carte` | `actualites` | Image, date, titre, résumé. |
+| `album-carte` | `albums` | Photo de couverture, nombre de photos, date, titre. |
 | `zone-pastille` | `zones` | Pastille cliquable colorée selon le métier. À utiliser avec la disposition « flux ». |
 
 ### Dispositions (`affichage`) et leurs `options`
@@ -419,6 +451,81 @@ Une équipe ou une catégorie d'âge, avec ses créneaux. Le type (école, comp�
 | `championnat` | non | texte | ≤ 80 car. — Compétition disputée (équipes en championnat) |
 | `creneaux` | non | liste de { jour: `lundi` · `mardi` · `mercredi` · `jeudi` · `vendredi` · `samedi` · `dimanche`, debut: texte, fin: texte, lieu?: texte } | ≤ 6 éléments — Entraînements de la semaine |
 | `encadrants` | non | liste de { nom: texte, role?: texte } | ≤ 6 éléments — Éducateurs et entraîneurs : nom affiché seulement avec leur accord |
+
+Corps Markdown facultatif après le frontmatter (affiché sur la page de détail). `sections` facultatif : blocs ajoutés après le corps.
+
+### `rencontres` — dossier `content/rencontres/`, un fichier `<id>.md`
+
+Une rencontre (match, plateau, tournoi) d'une équipe. Le compte rendu va dans le corps. Page : /rencontres/<id>.
+
+| Champ | Obligatoire | Type | Limites et notes |
+| --- | --- | --- | --- |
+| `titre` | oui | texte | ≥ 3 car., ≤ 90 car. |
+| `statut` | non | `brouillon` · `publie` · `programme` | défaut : "publie" |
+| `date` | oui | valeur libre | Jour de la rencontre |
+| `resume` | non | texte | ≤ 300 car. |
+| `image` | non | { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite` } | Image : { src, alt, focus? } |
+| `categorie` | non | `ecole` · `competition` · `loisir` | Métier (data/taxonomies.json) |
+| `mis_en_avant` | non | oui/non | défaut : false |
+| `ordre` | non | entier | ≥ -9007199254740991, défaut : 100 |
+| `seo` | non | { titre?: texte, description?: texte, noindex?: oui/non } | défaut : {"noindex":false} |
+| `ancres` | non | liste de texte | ≤ 6 éléments — Expressions qui, dans le texte des autres pages, deviennent un lien vers celle-ci (ex. « pompe à chaleur de piscine »). Précises, 2 à 6 mots ; jamais « ici », « nos services ». |
+| `role` | non | `aimant` · `seo` | aimant : élément que le visiteur a envie d'ouvrir, cible des liens d'engagement. seo : page d'entrée depuis Google (les zones le sont par défaut). |
+| `equipe` | oui | texte | Équipe (identifiant de la page équipe, ex. « moins-16-ans ») |
+| `type` | non | `match` · `plateau` · `tournoi` · `amical` | défaut : "match" — Plateau et tournoi : école de rugby, sans score officiel |
+| `heure` | non | texte | Coup d'envoi ou début (HH:MM) |
+| `adversaire` | non | texte | ≤ 80 car. — Club adverse (match) ; vide pour un plateau ou un tournoi |
+| `domicile` | non | oui/non | défaut : true — À domicile (stade Michel Bouchard) ou à l'extérieur |
+| `lieu` | non | texte | ≤ 80 car. — Lieu, si ce n'est pas le stade du club |
+| `competition` | non | texte | ≤ 80 car. — Ex. « Championnat territorial −16 ans, poule 2 » |
+| `score_pour` | non | entier | ≥ 0, ≤ 300 — Points marqués par le club |
+| `score_contre` | non | entier | ≥ 0, ≤ 300 — Points de l'adversaire |
+| `annulee` | non | oui/non | défaut : false — Rencontre annulée ou reportée |
+
+Corps Markdown facultatif après le frontmatter (affiché sur la page de détail). `sections` facultatif : blocs ajoutés après le corps.
+
+### `actualites` — dossier `content/actualites/`, un fichier `<id>.md`
+
+Une actualité du club, éventuellement d'une équipe. Page : /actualites/<id>.
+
+| Champ | Obligatoire | Type | Limites et notes |
+| --- | --- | --- | --- |
+| `titre` | oui | texte | ≥ 3 car., ≤ 90 car. |
+| `statut` | non | `brouillon` · `publie` · `programme` | défaut : "publie" |
+| `date` | oui | valeur libre |  |
+| `resume` | non | texte | ≤ 300 car. |
+| `image` | non | { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite` } | Image : { src, alt, focus? } |
+| `categorie` | non | `ecole` · `competition` · `loisir` | Métier (data/taxonomies.json) |
+| `mis_en_avant` | non | oui/non | défaut : false |
+| `ordre` | non | entier | ≥ -9007199254740991, défaut : 100 |
+| `seo` | non | { titre?: texte, description?: texte, noindex?: oui/non } | défaut : {"noindex":false} |
+| `ancres` | non | liste de texte | ≤ 6 éléments — Expressions qui, dans le texte des autres pages, deviennent un lien vers celle-ci (ex. « pompe à chaleur de piscine »). Précises, 2 à 6 mots ; jamais « ici », « nos services ». |
+| `role` | non | `aimant` · `seo` | aimant : élément que le visiteur a envie d'ouvrir, cible des liens d'engagement. seo : page d'entrée depuis Google (les zones le sont par défaut). |
+| `equipe` | non | texte | Équipe (identifiant de la page équipe, ex. « moins-16-ans ») |
+
+Corps Markdown facultatif après le frontmatter (affiché sur la page de détail). `sections` facultatif : blocs ajoutés après le corps.
+
+### `albums` — dossier `content/albums/`, un fichier `<id>.md`
+
+Un album photo (rencontre, tournoi, fête du club). Page : /albums/<id>.
+
+| Champ | Obligatoire | Type | Limites et notes |
+| --- | --- | --- | --- |
+| `titre` | oui | texte | ≥ 3 car., ≤ 90 car. |
+| `statut` | non | `brouillon` · `publie` · `programme` | défaut : "publie" |
+| `date` | oui | valeur libre | Date de l'événement photographié |
+| `resume` | non | texte | ≤ 300 car. |
+| `image` | non | { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite` } | Image : { src, alt, focus? } |
+| `categorie` | non | `ecole` · `competition` · `loisir` | Métier (data/taxonomies.json) |
+| `mis_en_avant` | non | oui/non | défaut : false |
+| `ordre` | non | entier | ≥ -9007199254740991, défaut : 100 |
+| `seo` | non | { titre?: texte, description?: texte, noindex?: oui/non } | défaut : {"noindex":false} |
+| `ancres` | non | liste de texte | ≤ 6 éléments — Expressions qui, dans le texte des autres pages, deviennent un lien vers celle-ci (ex. « pompe à chaleur de piscine »). Précises, 2 à 6 mots ; jamais « ici », « nos services ». |
+| `role` | non | `aimant` · `seo` | aimant : élément que le visiteur a envie d'ouvrir, cible des liens d'engagement. seo : page d'entrée depuis Google (les zones le sont par défaut). |
+| `equipe` | non | texte | Équipe (identifiant de la page équipe, ex. « moins-16-ans ») |
+| `photos` | oui | liste de { src: texte, alt: texte, focus?: `centre` · `haut` · `bas` · `gauche` · `droite`, legende?: texte } | ≥ 1 éléments, ≤ 80 éléments — Photos (80 au plus). Texte alternatif vide : « titre de l'album, photo n ». |
+| `credit` | non | texte | ≤ 80 car., défaut : "© La Roque Ovalie XV" |
+| `autorisations` | non | oui/non | défaut : false — Droit à l'image vérifié : aucun licencié ayant refusé la diffusion n'apparaît. Obligatoire pour publier. |
 
 Corps Markdown facultatif après le frontmatter (affiché sur la page de détail). `sections` facultatif : blocs ajoutés après le corps.
 

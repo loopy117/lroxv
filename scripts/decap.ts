@@ -57,11 +57,12 @@ const LIBELLES: Record<string, string> = {
   lien_label: 'Texte du lien', lieu: 'Commune', tags: 'Étiquettes', galerie: 'Galerie', ville: 'Ville', gabarit: 'Gabarit',
   fil_ariane: "Fil d'Ariane", brief: 'Demande d\'origine', sections: 'Sections', lien_tout_voir: 'Lien « tout voir »', bouton: 'Texte du bouton',
   sujet: "Objet de l'e-mail", champs: 'Champs', obligatoires: 'Champs obligatoires', body: 'Corps de la page',
+  equipe: 'Équipe', adversaire: 'Adversaire', domicile: 'À domicile', heure: 'Heure', competition: 'Compétition', score_pour: 'Points marqués par le club', score_contre: 'Points de l\'adversaire', annulee: 'Annulée ou reportée', autorisations: 'Droit à l\'image vérifié', photos: 'Photos', legende: 'Légende', credit: 'Crédit photo', annee: 'Année'
 };
 const LIBELLES_BLOCS: Record<string, string> = {
   hero: 'Ouverture (hero)', texte: 'Texte', 'texte-image': 'Texte et image', features: 'Points forts / étapes', galerie: 'Galerie',
   slider: 'Diaporama', cta: "Appel à l'action", faq: 'Questions fréquentes', chiffres: 'Chiffres clés', formulaire: 'Formulaire de contact', tarifs: 'Tarifs', partenaires: 'Partenaires', planning: 'Planning des entraînements',
-  boucle: 'Liste automatique (boucle)',
+  boucle: 'Liste automatique (boucle)', 'match-center': 'Prochaine rencontre et dernier résultat', frise: 'Frise chronologique',
 };
 /** Champs conservés mais non modifiables dans Decap. */
 const MASQUES: Record<string, string[]> = {
@@ -176,8 +177,12 @@ function champsPage() {
 
 function champsCollection(nom: keyof typeof collectionSchemas) {
   const s = js(collectionSchemas[nom]);
+  // Équipe : liste des pages équipes (jamais un identifiant à taper)
+  const equipe = (f: any) => (f.name === 'equipe'
+    ? { name: 'equipe', label: 'Équipe', widget: 'relation', collection: 'equipes', value_field: '{{slug}}', search_fields: ['titre', 'nom_court'], display_fields: ['nom_court'], required: f.required, ...(f.hint ? { hint: f.hint } : {}) }
+    : f);
   return [
-    ...champsObjet(s, ['sections']),
+    ...champsObjet(s, ['sections']).map(equipe),
     { name: 'body', label: 'Corps de la page', widget: 'markdown', required: false, buttons: ['bold', 'italic', 'link', 'heading-two', 'heading-three', 'bulleted-list', 'numbered-list'], editor_components: [], modes: ['rich_text'] },
     { ...champSections(false), label: 'Sections supplémentaires', hint: 'Facultatif : sections ajoutées après le corps sur la page de détail.' },
   ];
@@ -319,7 +324,7 @@ function config() {
         name: nom, label: reglages[nom].libelle, folder: `content/${nom}`, extension: 'md', format: 'frontmatter', create: true,
         identifier_field: 'titre', summary: '{{titre}}', slug: '{{slug}}', editor: { preview: false },
         media_folder: `/media/${nom}/{{filename}}`, public_folder: `/img/${nom}/{{filename}}`,
-        sortable_fields: ['titre', 'date', 'ordre'], ...(nom === 'realisations' ? { view_groups: [{ label: 'Métier', field: 'categorie' }] } : {}),
+        sortable_fields: ['titre', 'date', 'ordre'], ...(nom === 'rencontres' ? { summary: '{{date}} · {{titre}}', view_groups: [{ label: 'Équipe', field: 'equipe' }] } : {}), ...(nom === 'realisations' ? { view_groups: [{ label: 'Métier', field: 'categorie' }] } : {}),
         fields: champsCollection(nom),
       })),
       reglagesSite,

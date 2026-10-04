@@ -13,6 +13,7 @@ import Sections from '../components/Sections.astro';
 import Section from '../components/Section.astro';
 import Disposition from '../dispositions/Disposition.astro';
 import { gabaritDetail } from '../layouts/details';
+import Album from '../components/Album.astro';
 import { reglages } from '../lib/collections';
 import { urlPage, urlElement, urlArchive, urlCategorie } from '../lib/urls';
 import { executer, estPublie } from '../lib/requete';
@@ -78,10 +79,17 @@ const url = Astro.url.pathname.replace(/\/$/, '') || '/';
   const metier = (taxonomies.metiers as Record<string, string>)[entree.data.categorie];
   const jsonld = props.collection === 'services' || props.collection === 'zones'
     ? [ldService(siteBrut as unknown as Site, base, { nom: entree.data.titre, url, description: entree.data.resume, type: metier, villes: props.collection === 'zones' ? [entree.data.ville] : undefined })]
-    : [];
+    : props.collection === 'rencontres'
+      ? [{ '@context': 'https://schema.org', '@type': 'SportsEvent', name: entree.data.titre, sport: 'Rugby', url: base + url,
+          startDate: new Date(entree.data.date).toISOString().slice(0, 10) + (entree.data.heure ? `T${entree.data.heure}:00` : ''),
+          eventStatus: entree.data.annulee ? 'https://schema.org/EventCancelled' : 'https://schema.org/EventScheduled',
+          location: { '@type': 'Place', name: entree.data.lieu ?? (entree.data.domicile ? 'Stade Michel Bouchard' : (entree.data.adversaire ?? '')), ...(entree.data.domicile && !entree.data.lieu ? { address: { '@type': 'PostalAddress', addressLocality: "La Roque-d'Anthéron", postalCode: '13640', addressCountry: 'FR' } } : {}) },
+          organizer: { '@type': 'SportsClub', name: (siteBrut as any).nom, url: base } }]
+      : [];
   return (
     <Base titre={entree.data.titre} seo={{ ...entree.data.seo, description: entree.data.seo?.description ?? entree.data.resume }} url={url} jsonld={jsonld}>
       <Sections sections={avant} courant={courant} />
+      {props.collection === 'albums' && <Album titre={entree.data.titre} photos={entree.data.photos} credit={entree.data.credit} />}
       {aCorps && <Section largeur="etroite"><Markdown source={entree.body} /></Section>}
       {entree.data.sections && <Sections sections={entree.data.sections} courant={courant} />}
       <Sections sections={apres} courant={courant} />

@@ -5,7 +5,7 @@
 #  - push sur une branche cms/… (modification en attente dans l'éditeur) → aperçu (DOSSIER_APERCU, URL_APERCU),
 #    réservé aux comptes de l'espace client, avec correction des textes sur la page (scripts/apercu.ts)
 #  - « Voir l'aperçu » dans l'espace client (repository_dispatch « apercu ») : reconstruit l'aperçu pour une branche
-#  - lancement manuel possible depuis l'onglet Actions
+#  - lancement manuel possible depuis l'onglet Actions ; reconstruction chaque nuit (prochaine rencontre, résultats)
 # Réglages : Settings → Secrets and variables → Actions (voir DEPLOIEMENT.md)
 name: Déploiement
 
@@ -13,6 +13,9 @@ on:
   push:
     branches: [main, 'ia/**', 'cms/**']
   workflow_dispatch:
+  # Chaque matin : « prochaine rencontre » et calendrier à jour, rencontres passées rangées dans les résultats
+  schedule:
+    - cron: '23 4 * * *'
   repository_dispatch:
     types: [apercu]
 

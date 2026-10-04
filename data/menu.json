@@ -5,8 +5,8 @@
       "label": "Équipes"
     },
     {
-      "href": "/#calendrier",
-      "label": "Calendrier"
+      "label": "Calendrier",
+      "page": "/calendrier"
     },
     {
       "href": "/#actualites",

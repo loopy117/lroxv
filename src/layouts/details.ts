@@ -6,6 +6,7 @@
 import site from '../../data/site.json';
 import taxonomies from '../../data/taxonomies.json';
 import type { NomCollection } from '../schemas/collections';
+import { jourRencontre, heureFr, intitule, score, issue, libelleIssue, lieu, typeRencontre, aScore } from '../lib/rencontres';
 
 const ctaFin = { block: 'cta', variant: 'carte', spacing: 'compact', ...site.cta_defaut };
 const devis = { label: 'Demander un devis gratuit', href: '/contact', style: 'primaire' };
@@ -55,11 +56,49 @@ export function gabaritDetail(collection: NomCollection, e: { id: string; data: 
               : []),
         ],
         apres: [
+          { block: 'boucle', titre: 'Prochaines rencontres', source: 'rencontres', filtre: { equipe: '$courant.id', date: { apres: 'aujourdhui' } }, ordre: ['date asc', 'heure asc'], nombre: 6, carte: 'rencontre-ligne', affichage: 'liste' },
+          { block: 'boucle', titre: 'Derniers résultats', source: 'rencontres', filtre: { equipe: '$courant.id', date: { avant: 'aujourdhui' } }, ordre: 'date desc', nombre: 6, carte: 'rencontre-ligne', affichage: 'liste', lien_tout_voir: { label: 'Tout le calendrier', href: '/calendrier' } },
+          { block: 'boucle', background: 'alt', titre: `Actualités : ${d.nom_court}`, source: 'actualites', filtre: { equipe: '$courant.id' }, ordre: 'date desc', nombre: 3, carte: 'actualite-carte', affichage: 'grid', options: { colonnes: 3 } },
+          { block: 'boucle', titre: 'En photos', source: 'albums', filtre: { equipe: '$courant.id' }, ordre: 'date desc', nombre: 3, carte: 'album-carte', affichage: 'grid', options: { colonnes: 3 } },
           { block: 'boucle', background: 'alt', titre: `${metier} : les autres catégories`, source: 'equipes', filtre: { categorie: '$courant.categorie' }, exclure: ['$courant.id'], ordre: 'ordre asc', nombre: 6, carte: 'equipe-carte', affichage: 'grid' },
           ctaFin,
         ],
       };
     }
+    case 'rencontres': {
+      const r = { id: e.id, data: d };
+      const res = issue(r);
+      const infos = [
+        `**${(([c, ...x]) => c.toUpperCase() + x.join(''))(jourRencontre(d.date, true))}**${d.heure ? `, ${heureFr(d.heure)}` : ''}`,
+        `${d.domicile ? 'À domicile' : 'À l\'extérieur'}${lieu(r) ? ` : ${lieu(r)}` : ''}`,
+        d.competition,
+        d.annulee ? '**Rencontre annulée ou reportée.**' : '',
+      ].filter(Boolean).join('\n\n');
+      return {
+        avant: [
+          { block: 'hero', variant: d.image ? 'split' : 'minimal', surtitre: typeRencontre(d.type), titre: intitule(r), image: d.image,
+            texte: aScore(r) ? `${score(r)} · ${libelleIssue[res!]}` : d.resume },
+          { block: 'texte', spacing: 'compact', titre: 'La rencontre', contenu: infos },
+        ],
+        apres: [
+          { block: 'boucle', background: 'alt', titre: 'Les autres rencontres de l\'équipe', source: 'rencontres', filtre: { equipe: '$courant.equipe' }, exclure: ['$courant.id'], ordre: 'date desc', nombre: 5, carte: 'rencontre-ligne', affichage: 'liste', lien_tout_voir: { label: 'Tout le calendrier', href: '/calendrier' } },
+          { block: 'boucle', titre: 'En photos', source: 'albums', filtre: { equipe: '$courant.equipe' }, ordre: 'date desc', nombre: 3, carte: 'album-carte', affichage: 'grid', options: { colonnes: 3 } },
+        ],
+      };
+    }
+    case 'actualites':
+      return {
+        avant: [{ block: 'hero', variant: d.image ? 'split' : 'minimal', surtitre: new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(d.date)), titre: d.titre, texte: d.resume, image: d.image }],
+        apres: [
+          { block: 'boucle', background: 'alt', titre: 'Les autres actualités', source: 'actualites', exclure: ['$courant.id'], ordre: 'date desc', nombre: 3, carte: 'actualite-carte', affichage: 'grid', options: { colonnes: 3 }, lien_tout_voir: { label: 'Toutes les actualités', href: '/actualites' } },
+          ctaFin,
+        ],
+      };
+    case 'albums':
+      return {
+        avant: [{ block: 'hero', variant: 'minimal', surtitre: new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(d.date)), titre: d.titre, texte: d.resume }],
+        apres: [{ block: 'boucle', background: 'alt', titre: 'Autres albums', source: 'albums', exclure: ['$courant.id'], ordre: 'date desc', nombre: 3, carte: 'album-carte', affichage: 'grid', options: { colonnes: 3 }, lien_tout_voir: { label: 'Tous les albums', href: '/albums' } }],
+      };
     case 'zones':
       return {
         avant: [{ block: 'hero', variant: 'minimal', surtitre: d.ville, titre: d.titre, texte: d.resume, ctas: [devis] }],
