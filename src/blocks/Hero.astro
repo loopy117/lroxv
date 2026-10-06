@@ -2,8 +2,9 @@
 import Img from '../components/Img.astro';
 import Boutons from '../components/Boutons.astro';
 import Sillage from '../components/Sillage.astro';
+import Diaporama from '../components/Diaporama.astro';
 import { composantsIllustrations } from '../illustrations';
-const { variant = 'plein-ecran', background = 'clair', spacing, id, surtitre, titre, texte, image, illustration, ctas = [], points = [] } = Astro.props;
+const { variant = 'plein-ecran', background = 'clair', spacing, id, surtitre, titre, texte, image, illustration, diaporama, ctas = [], points = [] } = Astro.props;
 const Illustration = illustration ? composantsIllustrations[illustration.nom as keyof typeof composantsIllustrations] : null;
 const sombre = variant === 'plein-ecran' || background === 'sombre' || background === 'accent' || background === 'sillage-sombre';
 ---
@@ -30,7 +31,10 @@ const sombre = variant === 'plein-ecran' || background === 'sombre' || backgroun
     {variant === 'split' && image && (
       <div class="hero__split-media"><Img image={image} priorite sizes="(min-width: 900px) 50vw, 100vw" class="hero__img" /></div>
     )}
-    {variant === 'split' && !image && Illustration && (
+    {variant === 'split' && !image && diaporama && (
+      <div class="hero__split-media"><Diaporama vues={diaporama.vues} cadre={diaporama.cadre} label={`${titre} : en images`} priorite /></div>
+    )}
+    {variant === 'split' && !image && !diaporama && Illustration && (
       <div class="hero__split-media"><Illustration {...illustration} /></div>
     )}
   </div>

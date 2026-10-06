@@ -24,14 +24,23 @@ export const hero = z
     texte: z.string().max(220).optional(),
     image: image.optional().describe('Obligatoire sauf variante minimal (ou illustration en variante split)'),
     illustration: illustration.optional().describe('Variante split : illustration codée à la place de la photo'),
+    diaporama: z
+      .object({
+        cadre: z.enum(['telephone', 'arrondi']).default('telephone').describe('telephone : captures d\'écran de mobile dans un cadre de téléphone ; arrondi : photos aux coins arrondis'),
+        vues: z.array(z.object({ image, legende: z.string().min(3).max(60).describe('Courte légende de l\'étape, affichée sous l\'image') }).strict()).min(2).max(6),
+      })
+      .strict()
+      .optional()
+      .describe('Variante split : images qui défilent à la place de la photo (ex. une démarche étape par étape). Pause possible, immobile si l\'utilisateur réduit les animations.'),
     ctas: z.array(cta).max(2).default([]),
     points: z.array(z.string().max(40)).max(4).default([]).describe('Garanties courtes affichées sous les boutons'),
   })
   .strict()
-  .refine((b) => b.variant === 'minimal' || !!b.image || (b.variant === 'split' && !!b.illustration), { message: 'image obligatoire (plein-ecran), image ou illustration (split)', path: ['image'] })
+  .refine((b) => b.variant === 'minimal' || !!b.image || (b.variant === 'split' && (!!b.illustration || !!b.diaporama)), { message: 'image obligatoire (plein-ecran), image, illustration ou diaporama (split)', path: ['image'] })
+  .refine((b) => !b.diaporama || (b.variant === 'split' && !b.image && !b.illustration), { message: 'diaporama : variante split seulement, sans image ni illustration', path: ['diaporama'] })
   .meta({
     role: 'Ouverture de page, message principal.',
-    quand: 'Toujours en première section, un seul par page. plein-ecran : accueil et pages de service avec une belle photo. split : photo moins forte ou texte plus long. minimal : pages utilitaires (contact, mentions).',
+    quand: 'Toujours en première section, un seul par page. plein-ecran : accueil et pages de service avec une belle photo. split : photo moins forte ou texte plus long ; diaporama pour montrer une démarche en quelques écrans. minimal : pages utilitaires (contact, mentions).',
     eviter: 'Titre générique (« Bienvenue ») ; plus de deux boutons.',
   });
 
