@@ -4,6 +4,7 @@
  * coordonnées du site. Le validateur bloque la publication si une information obligatoire manque.
  */
 import type { Site } from '../schemas/site';
+import { ficheGoogle } from './avisGoogle';
 /** Adresse e-mail du site en lien, ou le formulaire de contact si le site n'affiche pas d'e-mail. */
 const courriel = (s: { email?: string }) => (s.email ? `[${s.email}](mailto:${s.email})` : 'le [formulaire de contact](/contact)');
 
@@ -97,6 +98,7 @@ export function politiqueConfidentialite(s: Site, polices: string | null): strin
     '',
     "Ce site ne dépose aucun cookie publicitaire ni traceur. La fréquentation est mesurée à partir des journaux du serveur, avec des adresses IP tronquées : aucun visiteur n'est identifié.",
     ...(polices ? ['', polices] : []),
+    ...(ficheGoogle() ? ['', "Les avis clients affichés proviennent de notre fiche Google : ils y sont publiés et signés par leurs auteurs. Ils sont intégrés aux pages du site, sans aucun appel à Google depuis votre navigateur."] : []),
     ...(process.env.GOOGLE_MAPS_CLE ? ['', "Les cartes Google Maps ne se chargent que si vous cliquez sur « Afficher la carte » : Google reçoit alors votre adresse IP et peut déposer ses propres cookies, selon sa politique de confidentialité."] : []),
     '',
     '## Vos droits',

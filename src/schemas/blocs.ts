@@ -34,6 +34,7 @@ export const hero = z
       .describe('Variante split : images qui défilent à la place de la photo (ex. une démarche étape par étape). Pause possible, immobile si l\'utilisateur réduit les animations.'),
     ctas: z.array(cta).max(2).default([]),
     points: z.array(z.string().max(40)).max(4).default([]).describe('Garanties courtes affichées sous les boutons'),
+    note_google: z.boolean().default(false).describe('Affiche la note de la fiche Google sous les boutons (ex. ★ 4,8 · 37 avis), actualisée chaque jour ; rien ne s\'affiche tant que la fiche n\'est pas reliée'),
   })
   .strict()
   .refine((b) => b.variant === 'minimal' || !!b.image || (b.variant === 'split' && (!!b.illustration || !!b.diaporama)), { message: 'image obligatoire (plein-ecran), image, illustration ou diaporama (split)', path: ['image'] })
@@ -439,8 +440,24 @@ export const labelsBloc = z
     eviter: 'Recopier un label dans un bloc texte : il ne disparaîtrait pas à son expiration.',
   });
 
-export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte, 'match-center': matchCenter, frise, labels: labelsBloc } as const;
+export const avisGoogle = z
+  .object({
+    block: z.literal('avis-google'),
+    variant: z.enum(['cartes', 'bandeau']).default('cartes').describe('cartes : la note et les avis ; bandeau : la note seule, sur une ligne'),
+    ...optionsCommunes,
+    ...entete,
+    nombre: z.number().int().min(1).max(5).default(3).describe('Nombre d\'avis affichés (Google en fournit 5 au plus)'),
+    note_min: z.number().int().min(1).max(5).default(4).describe('Seuls les avis ayant au moins cette note sont affichés'),
+  })
+  .strict()
+  .meta({
+    role: 'Note et derniers avis de la fiche Google de l\'entreprise, actualisés automatiquement chaque jour (rien à saisir).',
+    quand: 'Accueil ou page de service, après la présentation, pour rassurer avant la prise de contact. bandeau : rappel discret de la note.',
+    eviter: 'Recopier des avis à la main dans un bloc texte (ils ne seraient plus à jour) ; plus d\'un bloc avis par page. Le bloc ne s\'affiche pas tant que la fiche Google n\'est pas reliée par l\'agence.',
+  });
+
+export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte, 'match-center': matchCenter, frise, labels: labelsBloc, 'avis-google': avisGoogle } as const;
 export type NomBloc = keyof typeof blocs;
 
-export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte, matchCenter, frise, labelsBloc]);
+export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte, matchCenter, frise, labelsBloc, avisGoogle]);
 export type Section = z.infer<typeof section>;
