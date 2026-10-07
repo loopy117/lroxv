@@ -1,9 +1,9 @@
 {
  "socle": "socle-sites",
- "version": "1.4.0",
+ "version": "1.5.0",
  "modele": "club",
- "commit": "61dde8e",
- "installe": "2026-10-07T15:13:58.551Z",
+ "commit": "16acdb2",
+ "installe": "2026-10-07T17:02:59.923Z",
  "motifs": {
   "socle": [
    ".github/workflows/**",
@@ -36,7 +36,7 @@
   "ai/regles.md": "1bd2cf8ea4025989106dac10cd096dcd7744ba43c3fdfbe0a77e417a8818d859",
   "astro.config.mjs": "6651025fbe5031bbb9b920a8b55a4e5ce09eef912e0f5965025591073cab292e",
   "package-lock.json": "9ff9edb0bf7bd4d340ea00ddac933042fe8cb41629b7a4b9ce9b1ac4bac3e62b",
-  "package.json": "5d610b0d2fb3575f3ab42e632827147c80573f897b66303b15788b484c5dca83",
+  "package.json": "143ee94ab6c1ad4b71629716542d743a32beefde42a0974093efeb4913342355",
   "public/admin/.htaccess": "62e42c0573a92436c14391bdadf43e07fca27b004762dbb34001adffb2973e54",
   "public/admin/index.html": "f8beb3eb2916f0d80229a6c499b162d82492d3efe14435c3347559483fb85304",
   "public/admin/phototheque.js": "671e1a174553d23bd9d5d21bf63440bb73899fa3ea04acc8fc87075fa876d5c6",
@@ -45,6 +45,7 @@
   "scripts/catalogue.ts": "310e07b5657bf602694e33c685fa2b657e927fa98b8e5da6e4ccb4de045b15fe",
   "scripts/contexte-ia.ts": "e1d788d91dec6e2233a6e86b2672c73d654f48716e5f7f2e1643e06debb186ce",
   "scripts/copier-medias.mjs": "2f659ee132f9814de47405deb2c0e50f8df7989c89273403125eb4f8aa9e7cf7",
+  "scripts/csp.mjs": "8956fcf355832594e32fd2c45cf9f31e3e3bcc8b7fd4034716beabb59430b8f3",
   "scripts/decap.ts": "c2dbbca6c3ed295c10ec567af0887bd1c5a2dc3afc82258342e4d2089bb4ae5f",
   "scripts/import-media.ts": "ca9ea0a8fc4cdc264cb9ee4530f0bd0775f5b3fce01560f0cd86907fa230dab2",
   "scripts/indexnow.mjs": "60af474708a0fd5c6dea20254a6952374f3e0db908020e954efea959a1ca6c67",
