@@ -11,13 +11,15 @@ import { collectionSchemas, nomsCollections, type NomCollection } from './collec
 import { cartes, nomsCartes } from '../cards/cartes';
 import { illustration } from '../illustrations/noms';
 import { dispositions, nomsDispositions } from '../dispositions/dispositions';
+// Blocs propres au site (fichier du site, src/site/blocs/schemas.ts)
+import { schemasSite } from '../site/blocs/schemas';
 
 const sansH1 = (s: string) => !/^#\s/m.test(s);
 
 export const hero = z
   .object({
     block: z.literal('hero'),
-    variant: z.enum(['plein-ecran', 'split', 'minimal']).default('plein-ecran'),
+    variant: z.enum(['plein-ecran', 'split', 'minimal', 'scene']).default('plein-ecran'),
     ...optionsCommunes,
     surtitre: z.string().max(40).optional().describe('Pastille au-dessus du titre (ex. « Artisan installateur · Pertuis »)'),
     titre: z.string().min(10).max(70).describe('Titre principal de la page (H1)'),
@@ -32,16 +34,31 @@ export const hero = z
       .strict()
       .optional()
       .describe('Variante split : images qui défilent à la place de la photo (ex. une démarche étape par étape). Pause possible, immobile si l\'utilisateur réduit les animations.'),
+    scene: z
+      .object({
+        svg: z.string().regex(/^\/[A-Za-z0-9/_.-]+\.svg$/, 'chemin attendu : /<dossier>/<nom>.svg (fichier de public/)')
+          .describe('Illustration en SVG, fichier de public/ (ex. /illustrations/agence.svg). Disposition fond : sa partie gauche doit rester libre, le texte s\'y pose sur grand écran.'),
+        alt: z.string().max(125).default('').describe('Description de l\'illustration ; vide si elle est décorative'),
+        fond: image.optional().describe('Photo placée derrière l\'illustration, visible par ses zones transparentes (ex. la ville derrière une baie vitrée)'),
+        fond_largeur: z.number().int().min(10).max(100).default(100).describe('Largeur de la photo en % de l\'illustration, calée à droite (ex. 50 : la photo couvre la moitié droite, derrière la baie vitrée)'),
+        disposition: z.enum(['fond', 'cote']).default('fond').describe('fond : illustration large, texte posé sur sa partie gauche libre · cote : illustration entière à droite du texte (formats carrés ou hauts)'),
+        cadrage_mobile: z.enum(['gauche', 'centre', 'droite']).default('droite').describe('fond : partie de l\'illustration gardée sur téléphone, sous le texte'),
+      })
+      .strict()
+      .optional()
+      .describe('Variante scene : illustration pleine largeur, le texte posé sur sa partie gauche (sous le texte sur téléphone)'),
     ctas: z.array(cta).max(2).default([]),
     points: z.array(z.string().max(40)).max(4).default([]).describe('Garanties courtes affichées sous les boutons'),
     note_google: z.boolean().default(false).describe('Affiche la note de la fiche Google sous les boutons (ex. ★ 4,8 · 37 avis), actualisée chaque jour ; rien ne s\'affiche tant que la fiche n\'est pas reliée'),
   })
   .strict()
-  .refine((b) => b.variant === 'minimal' || !!b.image || (b.variant === 'split' && (!!b.illustration || !!b.diaporama)), { message: 'image obligatoire (plein-ecran), image, illustration ou diaporama (split)', path: ['image'] })
+  .refine((b) => b.variant === 'minimal' || b.variant === 'scene' || !!b.image || (b.variant === 'split' && (!!b.illustration || !!b.diaporama)), { message: 'image obligatoire (plein-ecran), image, illustration ou diaporama (split)', path: ['image'] })
+  .refine((b) => (b.variant === 'scene') === !!b.scene, { message: 'scene obligatoire pour la variante scene, et seulement pour elle', path: ['scene'] })
+  .refine((b) => b.variant !== 'scene' || (!b.image && !b.illustration && !b.diaporama), { message: 'variante scene : ni image, ni illustration, ni diaporama (la scène les remplace)', path: ['scene'] })
   .refine((b) => !b.diaporama || (b.variant === 'split' && !b.image && !b.illustration), { message: 'diaporama : variante split seulement, sans image ni illustration', path: ['diaporama'] })
   .meta({
     role: 'Ouverture de page, message principal.',
-    quand: 'Toujours en première section, un seul par page. plein-ecran : accueil et pages de service avec une belle photo. split : photo moins forte ou texte plus long ; diaporama pour montrer une démarche en quelques écrans. minimal : pages utilitaires (contact, mentions).',
+    quand: 'Toujours en première section, un seul par page. plein-ecran : accueil et pages de service avec une belle photo. split : photo moins forte ou texte plus long ; diaporama pour montrer une démarche en quelques écrans. minimal : pages utilitaires (contact, mentions). scene : une illustration large fournie en SVG, éventuellement avec une photo derrière ses parties transparentes.',
     eviter: 'Titre générique (« Bienvenue ») ; plus de deux boutons.',
   });
 
@@ -428,7 +445,7 @@ export const frise = z
 export const labelsBloc = z
   .object({
     block: z.literal('labels'),
-    variant: z.enum(['cartes', 'bandeau']).default('cartes').describe('cartes : détail (organisme, validité, attestation) · bandeau : une ligne compacte'),
+    variant: z.enum(['cartes', 'logos', 'bandeau']).default('cartes').describe('cartes : détail (organisme, validité, attestation) · logos : logo en grand au-dessus du nom et de la phrase (labels qui font vendre) · bandeau : une ligne compacte'),
     ...optionsCommunes,
     ...entete,
     elements: z.array(z.string().regex(/^[a-z0-9-]{2,40}$/)).max(20).optional().describe('Identifiants des labels à montrer, dans l\'ordre (tous si vide)'),
@@ -456,8 +473,13 @@ export const avisGoogle = z
     eviter: 'Recopier des avis à la main dans un bloc texte (ils ne seraient plus à jour) ; plus d\'un bloc avis par page. Le bloc ne s\'affiche pas tant que la fiche Google n\'est pas reliée par l\'agence.',
   });
 
-export const blocs = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte, 'match-center': matchCenter, frise, labels: labelsBloc, 'avis-google': avisGoogle } as const;
+const blocsSocle = { hero, texte, 'texte-image': texteImage, features, galerie, slider, cta: ctaBloc, faq, chiffres, formulaire, boucle, tarifs: tarifsBloc, partenaires: partenairesBloc, planning, legal, carte, 'match-center': matchCenter, frise, labels: labelsBloc, 'avis-google': avisGoogle } as const;
+
+// Un bloc du site ne remplace jamais un bloc du socle
+for (const nom of Object.keys(schemasSite)) if (nom in blocsSocle) throw new Error(`src/site/blocs/schemas.ts : « ${nom} » est déjà un bloc du socle, choisir un autre nom`);
+
+export const blocs = { ...blocsSocle, ...schemasSite } as typeof blocsSocle & Record<string, z.ZodTypeAny>;
 export type NomBloc = keyof typeof blocs;
 
-export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte, matchCenter, frise, labelsBloc, avisGoogle]);
+export const section = z.discriminatedUnion('block', [hero, texte, texteImage, features, galerie, slider, ctaBloc, faq, chiffres, formulaire, boucle, tarifsBloc, partenairesBloc, planning, legal, carte, matchCenter, frise, labelsBloc, avisGoogle, ...(Object.values(schemasSite) as any[])]);
 export type Section = z.infer<typeof section>;

@@ -19,8 +19,11 @@ import MatchCenter from './MatchCenter.astro';
 import Frise from './Frise.astro';
 import AvisGoogle from './AvisGoogle.astro';
 import type { NomBloc } from '../schemas/blocs';
+// Blocs propres au site (fichier du site, src/site/blocs/index.ts)
+import { composantsSite } from '../site/blocs';
 
 export const composantsBlocs: Record<NomBloc, any> = {
+  ...composantsSite,
   hero: Hero, texte: Texte, 'texte-image': TexteImage, features: Features, galerie: Galerie,
   slider: Slider, cta: Cta, faq: Faq, chiffres: Chiffres, formulaire: Formulaire, boucle: Boucle, tarifs: Tarifs, partenaires: Partenaires, planning: Planning, legal: Legal, carte: Carte, labels: Labels, 'match-center': MatchCenter, frise: Frise, 'avis-google': AvisGoogle,
 };

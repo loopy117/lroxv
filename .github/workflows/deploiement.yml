@@ -109,6 +109,8 @@ jobs:
           GOOGLE_MAPS_CLE: ${{ vars.GOOGLE_MAPS_CLE }}
           # Note et avis de la fiche Google, déposés chaque matin par l'agent du serveur (src/lib/avisGoogle.ts)
           AVIS_GOOGLE: ${{ vars.AVIS_GOOGLE }}
+          # Scores PageSpeed de tous les sites de l'agence, mesurés chaque semaine par l'agent (src/lib/scoresSites.ts)
+          SCORES_SITES: ${{ vars.SCORES_SITES }}
 
       - name: Préparer l'aperçu (textes corrigeables sur la page)
         if: env.CIBLE == 'apercu'

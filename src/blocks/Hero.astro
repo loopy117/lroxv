@@ -6,12 +6,30 @@ import Diaporama from '../components/Diaporama.astro';
 import Etoiles from '../components/Etoiles.astro';
 import { ficheGoogle, noteFr } from '../lib/avisGoogle';
 import { composantsIllustrations } from '../illustrations';
-const { variant = 'plein-ecran', background = 'clair', spacing, id, surtitre, titre, texte, image, illustration, diaporama, ctas = [], points = [], note_google = false } = Astro.props;
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+const { variant = 'plein-ecran', background = 'clair', spacing, id, surtitre, titre, texte, image, illustration, diaporama, scene, ctas = [], points = [], note_google = false } = Astro.props;
+// Variante scene : dimensions lues dans le viewBox du SVG (évite le décalage de mise en page au chargement)
+let dimScene = { l: 0, h: 0 };
+if (variant === 'scene' && scene) {
+  const svg = readFileSync(join(process.cwd(), 'public', scene.svg), 'utf8');
+  const vb = svg.match(/viewBox\s*=\s*["']\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)/);
+  if (!vb) throw new Error(`hero scene : viewBox introuvable dans public${scene.svg}`);
+  dimScene = { l: Math.round(+vb[1]), h: Math.round(+vb[2]) };
+}
 const fiche = note_google ? ficheGoogle() : null;
 const Illustration = illustration ? composantsIllustrations[illustration.nom as keyof typeof composantsIllustrations] : null;
 const sombre = variant === 'plein-ecran' || background === 'sombre' || background === 'accent' || background === 'sillage-sombre';
 ---
-<section id={id} class:list={['hero', `hero--${variant}`, `bg-${variant === 'plein-ecran' ? 'sombre' : background}`, `sp-${spacing}`, sombre && 'on-dark']}>
+<section id={id} class:list={['hero', `hero--${variant}`, variant === 'scene' && `hero--scene-${scene.disposition ?? 'fond'} hero--cadrage-${scene.cadrage_mobile ?? 'droite'}`, `bg-${variant === 'plein-ecran' ? 'sombre' : background}`, `sp-${spacing}`, sombre && 'on-dark']} style={variant === 'scene' ? `--scene-ratio:${(dimScene.h / dimScene.l).toFixed(4)}` : undefined}>
+  {variant === 'scene' && (
+    <div class="hero__scene">
+      <div class="hero__scene-cadre">
+        {scene.fond && <div class="hero__scene-fond" aria-hidden="true" style={`--fond-largeur:${scene.fond_largeur ?? 100}%`}><Img image={scene.fond} priorite sizes={`${Math.round((scene.fond_largeur ?? 100) * 1.2)}vw`} /></div>}
+        <img class="hero__scene-svg" src={scene.svg} alt={scene.alt ?? ''} width={dimScene.l} height={dimScene.h} loading="eager" fetchpriority="high" decoding="async" />
+      </div>
+    </div>
+  )}
   {variant !== 'plein-ecran' && background.startsWith('sillage') && <Sillage variante={background === 'sillage' ? 'clair' : 'sombre'} />}
   {variant === 'plein-ecran' && image && (
     <div class="hero__media" aria-hidden={image.alt ? undefined : 'true'}>
@@ -94,6 +112,48 @@ const sombre = variant === 'plein-ecran' || background === 'sombre' || backgroun
   .hero--split.on-dark .hero__intro { color: var(--c-on-dark-body); }
   .hero--split.on-dark .hero__points li { color: var(--c-on-dark-muted); }
   .hero__split-media :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-xl); }
+
+  /* scene : illustration large (SVG), photo facultative derrière ses parties transparentes.
+     Téléphone et tablette : texte puis illustration recadrée. Grand écran : texte posé sur la partie gauche. */
+  .hero--scene { display: flex; flex-direction: column-reverse; padding: 0; }
+  .hero--scene .hero__grille { padding-block: clamp(40px, 6vw, 72px) 28px; }
+  .hero--scene .hero__titre { font-size: clamp(34px, 5vw, 58px); line-height: 1.05; }
+  /* Sur une illustration colorée, le gris clair ne contraste pas assez : texte courant plus foncé */
+  .hero--scene .hero__intro, .hero--scene .hero__points li { color: var(--c-text-body); }
+  /* Le cadre a les proportions de l'illustration et « couvre » la scène (comme object-fit: cover), calé en bas selon
+     le cadrage : la photo, posée dans le cadre (partie droite, --fond-largeur), reste derrière les mêmes zones de
+     l'illustration quel que soit le recadrage. */
+  .hero__scene { position: relative; overflow: hidden; aspect-ratio: 4 / 3; container-type: size; background: var(--c-scene-ciel, linear-gradient(180deg, oklch(0.93 0.03 220), oklch(0.97 0.015 210))); }
+  .hero__scene-cadre { position: absolute; bottom: 0; right: 0; width: max(100cqw, 100cqh / var(--scene-ratio)); aspect-ratio: 1 / var(--scene-ratio); }
+  .hero--cadrage-gauche .hero__scene-cadre { right: auto; left: 0; }
+  .hero--cadrage-centre .hero__scene-cadre { right: auto; left: 50%; translate: -50% 0; }
+  .hero__scene-fond { position: absolute; top: 0; bottom: 0; right: 0; width: var(--fond-largeur, 100%); }
+  .hero__scene-fond :global(picture), .hero__scene-fond :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .hero__scene-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  @media (min-width: 640px) { .hero__scene { aspect-ratio: 16 / 9; } }
+  /* Grand écran : la section a la hauteur naturelle de l'illustration, et le texte se pose sur sa partie gauche libre
+     (--scene-largeur-texte). Si le texte demande plus de hauteur, l'illustration s'agrandit en restant calée en bas à
+     droite : seul le bord gauche (le décor libre) est rogné. */
+  @media (min-width: 1200px) {
+    .hero--scene-fond { display: block; min-height: calc(100vw * var(--scene-ratio)); }
+    .hero--scene-fond .hero__scene { position: absolute; inset: 0; aspect-ratio: auto; }
+    .hero--scene-fond .hero__scene-cadre { right: 0; left: auto; translate: none; }
+    .hero--scene-fond .hero__grille { min-height: inherit; display: flex; align-items: center; padding-block: 40px 56px; }
+    .hero--scene-fond .hero__texte { max-width: min(var(--scene-largeur-texte, calc(52vw - var(--gutter))), 620px); gap: 18px; }
+    .hero--scene-fond .hero__titre { font-size: clamp(36px, 3.3vw, 60px); }
+    .hero--scene-fond .hero__intro { font-size: var(--fs-md); }
+    .hero--scene-fond :global(.btn--secondaire) { background: rgb(255 255 255 / 0.72); }
+  }
+  /* scene « cote » : illustration entière à droite du texte (sous le texte sur téléphone) */
+  .hero--scene-cote { background: var(--c-surface-alt); }
+  .hero--scene-cote .hero__scene { aspect-ratio: auto; container-type: normal; background: none; max-width: 520px; margin: 0 auto; padding: 0 var(--gutter) 40px; }
+  .hero--scene-cote .hero__scene-cadre { position: relative; width: 100%; }
+  .hero--scene-cote .hero__scene-svg { position: static; height: auto; }
+  @media (min-width: 900px) {
+    .hero--scene-cote { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; padding-inline: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); column-gap: clamp(32px, 5vw, 80px); }
+    .hero--scene-cote .hero__grille { grid-column: 1; grid-row: 1; padding: clamp(56px, 7vw, 104px) 0; width: auto; max-width: none; margin: 0; }
+    .hero--scene-cote .hero__scene { grid-column: 2; grid-row: 1; padding: 32px 0; max-width: 560px; }
+  }
 
   /* minimal : titre et texte, sans image */
   .hero--minimal { padding-block: 56px 32px; }

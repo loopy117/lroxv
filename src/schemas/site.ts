@@ -108,6 +108,14 @@ export const site = z
       .strict()
       .optional()
       .describe('Club : sport et lieu des rencontres à domicile (modèle club)'),
+    engagement: z
+      .object({
+        aimant_obligatoire: z.boolean().default(false).describe('true : le build échoue si une page indexable (hors pages aimants et exemptées) n\'a aucun lien vers une page aimant'),
+        exemptees: z.array(z.string().regex(/^\//)).max(20).default(['/contact']).describe('Pages dispensées de ce lien (ex. /contact)'),
+      })
+      .strict()
+      .optional()
+      .describe('Garder le visiteur : obliger chaque page à proposer une page aimant (objectif : au moins deux pages vues par visite)'),
     cta_defaut: z
       .object({ titre: z.string().max(90), texte: z.string().max(300), ctas: z.array(cta).min(1).max(2), note: z.string().max(80).optional() })
       .strict(),

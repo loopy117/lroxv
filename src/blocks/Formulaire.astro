@@ -165,6 +165,18 @@ const lienConfidentialite = confidentialite?.publie ? '/confidentialite' : null;
       return blob ? new File([blob], f.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' }) : f;
     } catch { return f; }
   }
+  // Champs préremplis depuis l'adresse : ?formule=Croissance → précision « formule » (liens des grilles de prix)
+  const params = new URLSearchParams(location.search);
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-formulaire]')) {
+    for (const [cle, valeur] of params) {
+      if (!/^[a-z0-9_-]{1,40}$/.test(cle) || !valeur) continue;
+      const champ = form.querySelector<HTMLSelectElement | HTMLInputElement>(`[name="p_${cle}"]`);
+      if (champ instanceof HTMLSelectElement) {
+        const o = [...champ.options].find((x) => x.value && x.value.toLowerCase().startsWith(valeur.toLowerCase().slice(0, 80)));
+        if (o) champ.value = o.value;
+      } else if (champ && champ.type !== 'file') champ.value = valeur.slice(0, 200);
+    }
+  }
   for (const form of document.querySelectorAll<HTMLFormElement>('[data-formulaire]')) {
     const debut = performance.now();
     const statut = form.querySelector<HTMLElement>('[data-statut]')!;

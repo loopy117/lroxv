@@ -17,6 +17,10 @@ const engagements = c?.engagements.length ? c.engagements : [{ mois: 0, remise: 
 const uid = `tf-${Math.random().toString(36).slice(2, 8)}`;
 const prixNet = (remise: number) => (c ? c.prix * (1 - remise / 100) : 0);
 const lienFormule = cta?.href ?? '#audit';
+// Bouton d'une formule : le formulaire visé est prérempli avec la formule (et la durée choisie, via le script).
+// Lien vers une autre page : la formule passe dans l'adresse (?formule=…), lue par le bloc formulaire.
+const lienDe = (nom: string) => lienFormule.startsWith('#') ? lienFormule
+  : lienFormule.replace(/^([^?#]*)(\?[^#]*)?(#.*)?$/, (_m, p, q, h) => `${p}${q ? q + '&' : '?'}formule=${encodeURIComponent(nom)}${h ?? ''}`);
 ---
 <Section {background} {spacing} {id} {surtitre} {titre} {intro} class="entete-empile">
   <div class="tf" id={uid}>
@@ -71,7 +75,7 @@ const lienFormule = cta?.href ?? '#audit';
             {f.inclus.map((x) => <li>{x}</li>)}
           </ul>
           {f.demandes && <p class="tf__demandes">{f.demandes}</p>}
-          <a class:list={['btn', f.mis_en_avant ? 'btn--primaire' : 'btn--secondaire', 'tf__cta']} href={lienFormule}>{f.bouton ?? `Choisir ${f.nom}`}</a>
+          <a class:list={['btn', f.mis_en_avant ? 'btn--primaire' : 'btn--secondaire', 'tf__cta']} href={lienDe(f.nom)} data-formule={f.nom}>{f.bouton ?? `Choisir ${f.nom}`}</a>
         </li>
       ))}
     </ul>
@@ -98,6 +102,37 @@ const lienFormule = cta?.href ?? '#audit';
     {t.mention && <p class="tf__mention">{t.mention}</p>}
   </div>
 </Section>
+
+<script>
+  /** « Choisir Croissance » : le formulaire de la même page reçoit la formule et la durée d'engagement choisies. */
+  const choisir = (form: Element, id: string, valeur: string) => {
+    const champ = form.querySelector<HTMLSelectElement | HTMLInputElement>(`[name="p_${id}"]`);
+    if (!champ) return;
+    if (champ instanceof HTMLSelectElement) {
+      const v = valeur.toLowerCase();
+      const o = [...champ.options].find((x) => x.value && (x.value.toLowerCase() === v || x.value.toLowerCase().startsWith(v)));
+      if (o) champ.value = o.value;
+    } else champ.value = valeur;
+    champ.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+  for (const tf of document.querySelectorAll<HTMLElement>('.tf')) {
+    for (const a of tf.querySelectorAll<HTMLAnchorElement>('a[data-formule]')) {
+      a.addEventListener('click', () => {
+        const duree = tf.querySelector<HTMLInputElement>('.tf__radio:checked')?.value;
+        if (a.pathname !== location.pathname) {
+          // Formulaire sur une autre page : la durée choisie part dans l'adresse avec la formule
+          if (duree) { const u = new URL(a.href); u.searchParams.set('engagement', `${duree} mois`); a.href = u.href; }
+          return;
+        }
+        if (!a.hash) return;
+        const form = document.querySelector(a.hash)?.querySelector('form');
+        if (!form) return;
+        choisir(form, 'formule', a.dataset.formule!);
+        if (duree) choisir(form, 'engagement', `${duree} mois`);
+      });
+    }
+  }
+</script>
 
 <style>
   .tf { display: flex; flex-direction: column; gap: clamp(32px, 4vw, 56px); }
